@@ -8,6 +8,7 @@ django = "*"
 django-phonenumber-field = {extras = ["phonenumbers"], version = "*"}
 pillow = "*"
 mysqlclient = "*"
+cryptography = "*"
 
 [dev-packages]
 
