@@ -5,10 +5,6 @@ from django.core.validators import FileExtensionValidator
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding
-
-
 
 # Create your models here.
 class Province(models.Model):
@@ -20,7 +16,7 @@ class Province(models.Model):
 
 class Commune(models.Model):
     province = models.ForeignKey(Province, verbose_name="Province", related_name="communes", on_delete=models.CASCADE)
-    commune_name = models.CharField(verbose_name="Commune Name", max_length=50, unique=True, blank=False)
+    commune_name = models.CharField(verbose_name="Commune Name", max_length=50, blank=False)
 
     def __str__(self):
         return self.commune_name
@@ -28,7 +24,7 @@ class Commune(models.Model):
 
 class Colline(models.Model):
     commune = models.ForeignKey(Commune, verbose_name="Commune", related_name="collines", on_delete=models.CASCADE)
-    colline_name = models.CharField(verbose_name="Colline Name", max_length=50, unique=True, blank=False)
+    colline_name = models.CharField(verbose_name="Colline Name", max_length=50, blank=False)
 
     def __str__(self):
         return self.colline_name
@@ -41,6 +37,7 @@ class Citizen(models.Model):
         MALE = "Male", "Male"
         FEMALE = "Female", "Female"
 
+    recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
     first_name = models.CharField(verbose_name="First Name", max_length=50, blank=False)
     last_name = models.CharField(verbose_name="Last Name", max_length=50, blank=False)
     gender = models.CharField(verbose_name="Gender", choices=Gender.choices, default=Gender.SELECT, max_length=10)
@@ -81,6 +78,7 @@ class CitizenParent(models.Model):
 
 
 class IDCardRegistration(models.Model):
+    recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
     citizen = models.ForeignKey(Citizen, verbose_name="Citizen", on_delete=models.CASCADE)
     resident_address = models.ForeignKey(Colline, verbose_name="Resident Address", related_name="registrations", on_delete=models.SET_NULL, blank=True, null=True)
     picture = models.ImageField(
@@ -89,24 +87,7 @@ class IDCardRegistration(models.Model):
         validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])],
         blank=True, null=True
     )
-    signature = models.BinaryField()  # Store the digital signature
-    data_hash = models.BinaryField()  # Store the hash of the signed data
     registration_date = models.DateField(verbose_name="Registration Date", auto_now_add=True)
-
-    def verify_signature(self, public_key):
-        """
-        Verify the digital signature using a public key.
-        """
-        verifier = public_key.verifier(
-            self.signature,
-            padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()),
-                salt_length=padding.PSS.MAX_LENGTH
-            ),
-            hashes.SHA256()
-        )
-        verifier.update(self.data_hash)
-        return verifier.verify()
 
     def image(self):
         return mark_safe('<img src="/../../media/%s" width="70" />' % (self.picture))
@@ -118,8 +99,21 @@ class IDCardRegistration(models.Model):
 
 
 
+class RegisteredIDCard(models.Model):
+    recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    citizen = models.ForeignKey(Citizen, verbose_name="Citizen", on_delete=models.CASCADE)
+    card_number = models.CharField(verbose_name="ID Number", max_length=20)
+    is_taken = models.BooleanField(verbose_name="Is taken?", default=False)
+    created_date = models.DateField(verbose_name="Date created", auto_now_add=True)
+    taken_date = models.DateField(verbose_name="Date taken")
+
+    def __str__(self):
+        return f"Registered ID Card - Card Number: {self.card_number}, User: {self.user}"
+
+
+
 class LostIDCardReport(models.Model):
-    recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
     citizen = models.ForeignKey(Citizen, verbose_name="Citizen", related_name="lost_reports", on_delete=models.CASCADE)
     card_number = models.CharField(max_length=20, verbose_name="Lost Card ID number",)
     date_lost = models.DateField(verbose_name="When lost")

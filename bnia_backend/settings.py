@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
 
     # local apps
+    'account',
     'management',
 ]
 
@@ -81,8 +82,31 @@ WSGI_APPLICATION = 'bnia_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+
+        # # DECLARING OUR DATABASE
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'localhost',
+        'USER': 'root',
+        'PASSWORD': '',
+        'NAME': 'db_bnia',
+        'PORT': 3306,
+
+        # optional:
+        'OPTIONS': {
+            'charset': 'utf8',
+            'use_unicode': True,
+            'init_command': 'SET '
+                'storage_engine=INNODB,'
+                'character_set_connection=utf8,'
+                'collation_connection=utf8_bin,'
+                'sql_mode=STRICT_TRANS_TABLES'    # see note below
+                # 'SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED',
+        },
+        'TEST_CHARSET': 'utf8',
+        'TEST_COLLATION': 'utf8_general_ci',
+
     }
 }
 
@@ -124,9 +148,9 @@ USE_TZ = True
 
 
 #statc file directory
-STATIC_URL = '/assets/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'assets'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 # ADDING THE IMAGES OR VIDEOS
@@ -143,8 +167,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # # user model
-# AUTH_USER_MODEL = "account.User"
-# swappable = 'AUTH_USER_MODEL'
+AUTH_USER_MODEL = "account.User"
+swappable = 'AUTH_USER_MODEL'
 
 
 # notifications through email
