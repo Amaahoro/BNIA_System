@@ -1,0 +1,48 @@
+{% load static %}
+<nav
+  class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light"
+  id="ftco-navbar"
+>
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}"> 
+        <img width="50" class="bg-light" src="{% static 'front/images/nation_logo.png' %}" /> 
+        <span class="">BNIA.</span> 
+    </a>
+    <button
+      class="navbar-toggler js-fh5co-nav-toggle fh5co-nav-toggle"
+      type="button"
+      data-toggle="collapse"
+      data-target="#nav_menu"
+      aria-controls="ftco-nav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="oi oi-menu"></span> Menu
+    </button>
+
+    <div class="collapse navbar-collapse" id="nav_menu">
+      <ul class="navbar-nav nav ml-auto">
+        <li class="nav-item {{home_active}}">
+          <a href="{% url 'home' %}" class="nav-link" data-nav-section="home">
+            <span>HOME</span>
+          </a>
+        </li>
+        <li class="nav-item {{about_active}}">
+          <a href="{% url 'about_bnia' %}" class="nav-link" data-nav-section="about">
+            <span>ABOUT</span>
+          </a>
+        </li>
+        <li class="nav-item {{service_active}}">
+          <a href="{% url 'service' %}" class="nav-link" data-nav-section="service">
+            <span>SERVICES</span>
+          </a>
+        </li>
+        <li class="nav-item {{pub_active}}">
+          <a href="{% url 'publications' %}" class="nav-link" data-nav-section="publication">
+            <span>PUBLICATIONS</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

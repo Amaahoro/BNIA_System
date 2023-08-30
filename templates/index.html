@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% if title %}
+    <title>BNIA - {{ title }}</title>
+    {% else %}
+    <title>BNIA</title>
+    {% endif%}
+
+    <link rel="icon" type="image/jpg" href="{% static 'front/images/nation_logo.png' %}" />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="{% static 'front/css/open-iconic-bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'front/css/animate.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'front/css/owl.carousel.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'front/css/owl.theme.default.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'front/css/magnific-popup.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'front/css/aos.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'front/css/ionicons.min.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'front/css/flaticon.css' %}" />
+    <link rel="stylesheet" href="{% static 'front/css/icomoon.css' %}" />
+    <link rel="stylesheet" href="{% static 'front/css/style.css' %}" />
+  </head>
+  <body>
+    
+    <!-- ======= Header ======= -->
+    {% include 'includes/header.html' %}
+    <!-- End Header -->
+
+    {% block main_content %} {% endblock %}
+
+    
+    <!-- ======= Footer ======= -->
+    {% include 'includes/footer.html' %}
+    <!-- End Footer -->
+    
+    <!-- loader -->
+    <div id="ftco-loader" class="show fullscreen">
+      <svg class="circular" width="48px" height="48px">
+        <circle
+          class="path-bg"
+          cx="24"
+          cy="24"
+          r="22"
+          fill="none"
+          stroke-width="4"
+          stroke="#eeeeee"
+        />
+        <circle
+          class="path"
+          cx="24"
+          cy="24"
+          r="22"
+          fill="none"
+          stroke-width="4"
+          stroke-miterlimit="10"
+          stroke="#F96D00"
+        />
+      </svg>
+    </div>
+    
+    {% if messages %} {% for message in messages %}
+    <script>
+      //<!--contents message displayed-->
+      alert("{{ message }}");
+      //<!-- / .contents message displayed-->
+    </script>
+    {% endfor %} {% endif %}
+
+    <script src="{% static 'front/js/jquery.min.js' %}"></script>
+    <script src="{% static 'front/js/jquery-migrate-3.0.1.min.js' %}"></script>
+    <script src="{% static 'front/js/popper.min.js' %}"></script>
+    <script src="{% static 'front/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'front/js/jquery.easing.1.3.js' %}"></script>
+    <script src="{% static 'front/js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'front/js/jquery.stellar.min.j' %}s"></script>
+    <script src="{% static 'front/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'front/js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'front/js/aos.js' %}"></script>
+    <script src="{% static 'front/js/jquery.animateNumber.min.js' %}"></script>
+    <script src="{% static 'front/js/scrollax.min.js' %}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+    <script src="{% static 'front/js/google-map.js' %}"></script>
+    <script src="{% static 'front/js/main.js' %}"></script>
+  </body>
+</html>

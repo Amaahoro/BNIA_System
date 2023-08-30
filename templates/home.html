@@ -1,0 +1,102 @@
+{% extends "index.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+  </head>
+
+  <body>
+    {% block main_content%}
+
+    <section
+      class="hero-wrap js-fullheight"
+      style="background-image: url('{% static 'front/images/bg_1.jpg' %}')"
+      data-section="home"
+    >
+      <div class="overlay"></div>
+      <div class="container">
+        <div
+          class="row no-gutters slider-text js-fullheight align-items-center justify-content-start"
+          data-scrollax-parent="true"
+        >
+          <div
+            class="col-md-9 ftco-animate mt-5"
+            data-scrollax=" properties: { translateY: '80%' }"
+          >
+            <h1
+              class="mb-4"
+              data-scrollax="properties: { translateY: '30%', opacity: 1.6 }"
+            >
+              Burundian National Identity Application
+            </h1>
+            <p
+              class="mb-4"
+              data-scrollax="properties: { translateY: '30%', opacity: 1.6 }"
+            >
+              Smart Id, Smart Idea, Smart People.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ftco-section bg-light" data-section="blog">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-md-10 heading-section text-center ftco-animate">
+            <h2 class="mb-4">Services</h2>
+            <p>
+              Thank you for being our valued customers. We are so grateful for
+              the pleasure of serving you. And we will do our best to continue
+              to give you the best service you deserve. Thank you
+            </p>
+          </div>
+        </div>
+        <div class="row d-flex">
+          {% for service in services %}
+          <div class="col-lg-4 col-md-6 col-sm-12 d-flex ftco-animate">
+            <div class="card blog-entry justify-content-end">
+              <div class="card-body text mt-3 float-right d-block">
+                <h3 class="heading">
+                  <a href="{% url 'service_details' service.service_name %}">
+                    {{service.service_name}}
+                  </a>
+                </h3>
+                <p>
+                  {{ service.requirements|truncatechars:100 }}
+                </p>
+                <div class="d-flex align-items-center mt-4 meta">
+                  <p class="mb-0">
+                    <a
+                      href="{% url 'service_details' service.service_name %}"
+                      class="text-info"
+                      >Read More
+                      <span class="ion-ios-arrow-round-forward"></span
+                    ></a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="text-center">
+          <a
+            href="{% url 'service' %}"
+            class="btn btn-info px-5"
+            style="margin: auto"
+          >
+            Explore More
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {% endblock %}
+  </body>
+</html>

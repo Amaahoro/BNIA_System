@@ -1,0 +1,75 @@
+{% extends "index.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Services</title>
+  </head>
+
+  <body>
+    {% block main_content%}
+    
+    <section class="hero-wrap hero-wrap-2" style="background-image: url('{% static 'front/images/bg_1.jpg' %}');" data-stellar-background-ratio="0.5">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row no-gutters slider-text align-items-end justify-content-center">
+          <div class="col-md-9 ftco-animate pb-5 text-center">
+            <h1 class="mb-3 bread">BNIA Services</h1>
+            <p class="breadcrumbs">
+              <span class="mr-2">
+                <a href="{% url 'home' %}">Home <i class="ion-ios-arrow-forward"></i></a>
+              </span> 
+              <span> Services <i class="ion-ios-arrow-forward"></i></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ftco-section bg-light">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-md-10 heading-sectionftco-animate">
+            <h2 class="mb-4">Services</h2>
+          </div>
+        </div>
+        
+        <div class="row d-flex">
+          {% for service in services %}
+          <div class="col-lg-4 col-md-6 col-sm-12 d-flex ftco-animate">
+            <div class="card blog-entry justify-content-end">
+              <div class="card-body text mt-3 float-right d-block">
+                <h3 class="heading">
+                  <a href="{% url 'service_details' service.service_name %}">
+                    {{service.service_name}}
+                  </a>
+                </h3>
+                <p>
+                  {{ service.requirements|truncatechars:100 }}
+                </p>
+                <div class="d-flex align-items-center mt-4 meta">
+                  <p class="mb-0">
+                    <a
+                      href="{% url 'service_details' service.service_name %}"
+                      class="text-info"
+                      >Read More
+                      <span class="ion-ios-arrow-round-forward"></span
+                    ></a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+
+    {% endblock %}
+  </body>
+</html>

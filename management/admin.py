@@ -167,3 +167,36 @@ class LostIDCardReportAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         return ['created_date',]
+
+
+
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ('service_name',)
+    fieldsets = (
+        ('Service Info', {'fields': ('service_name','requirements','recorded_by',)}),
+    )
+    add_fieldsets = (
+        ('New Service', {'fields': ('service_name','requirements','recorded_by',)}),
+    )
+    search_fields = ('service_name',)
+    ordering = ('service_name',)
+    list_per_page = 20
+
+
+
+@admin.register(Publication)
+class PublicationAdmin(admin.ModelAdmin):
+    list_display = ('title','files','publication_date',)
+    fieldsets = (
+        ('Service Info', {'fields': ('title','files','publication_date','recorded_by',)}),
+    )
+    add_fieldsets = (
+        ('New Service', {'fields': ('title','files','publication_date','recorded_by',)}),
+    )
+    search_fields = ('title',)
+    ordering = ('-publication_date',)
+    list_per_page = 20
+
+    def get_readonly_fields(self, request, obj=None):
+        return ['publication_date',]

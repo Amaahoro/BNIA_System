@@ -123,3 +123,24 @@ class LostIDCardReport(models.Model):
 
     def __str__(self):
         return f"Lost ID Card Report - Card Number: {self.card_number}, Citizen: {self.citizen}"
+
+
+
+class Service(models.Model):
+    recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    service_name = models.CharField(verbose_name="Service Title", max_length=100, blank=False, null=False, unique=True)
+    requirements = models.TextField(verbose_name="Requirements", blank=False, null=False)
+
+    def __str__(self):
+        return self.service_name
+
+
+
+class Publication(models.Model):
+    recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    title = models.CharField(verbose_name="Title", max_length=255, blank=False, null=False)
+    files = models.FileField(verbose_name="File", upload_to='publications/', blank=False, null=False)
+    publication_date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
