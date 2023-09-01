@@ -89,9 +89,17 @@ class IDCardRegistration(models.Model):
 
 
 class RegisteredIDCard(models.Model):
+    
+    class TakenCount(models.TextChoices):
+        SELECT = "", "Select Parent"
+        FIRST = "First", "First"
+        SECOND = "Second", "Second"
+        THIRD = "Third", "Third"
+    
     recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
     citizen = models.ForeignKey(Citizen, verbose_name="Citizen", on_delete=models.CASCADE)
     card_number = models.CharField(verbose_name="ID Number", max_length=20)
+    takenCount = models.CharField(verbose_name="Taken Count", choices=TakenCount.choices, default=TakenCount.SELECT, max_length=10)
     is_taken = models.BooleanField(verbose_name="Is taken?", default=False)
     placeofissue = models.ForeignKey(Commune, verbose_name="Place of Issue", related_name="registerd_idcard", on_delete=models.SET_NULL, blank=True, null=True)
     created_date = models.DateField(verbose_name="Date created", auto_now_add=True)

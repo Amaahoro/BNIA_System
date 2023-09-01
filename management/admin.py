@@ -134,13 +134,13 @@ class IDCardRegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(RegisteredIDCard)
 class RegisteredIDCardAdmin(admin.ModelAdmin):
-    list_display = ('citizen','card_number','created_date','is_taken','placeofissue','taken_date',)
+    list_display = ('citizen','card_number','created_date','is_taken','takenCount','placeofissue','taken_date',)
     list_filter = ('is_taken',)
     fieldsets = (
-        ('ID Card Registration Info', {'fields': ('recorded_by','citizen','card_number','created_date','is_taken','placeofissue','taken_date',)}),
+        ('ID Card Registration Info', {'fields': ('recorded_by','citizen','card_number','created_date','is_taken','takenCount','placeofissue','taken_date',)}),
     )
     add_fieldsets = (
-        ('New ID Card Registration', {'fields': ('recorded_by','citizen','card_number','created_date','is_taken','placeofissue','taken_date',)}),
+        ('New ID Card Registration', {'fields': ('recorded_by','citizen','card_number','created_date','is_taken','takenCount','placeofissue','taken_date',)}),
     )
     search_fields = ('card_number',)
     ordering = ('is_taken','placeofissue',)
