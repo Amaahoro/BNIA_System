@@ -42,21 +42,10 @@ class Citizen(models.Model):
     last_name = models.CharField(verbose_name="Last Name", max_length=50, blank=False)
     gender = models.CharField(verbose_name="Gender", choices=Gender.choices, default=Gender.SELECT, max_length=10)
     birth_place = models.ForeignKey(Colline, verbose_name="Resident Address", on_delete=models.SET_NULL, blank=True, null=True)
-    nationality = models.CharField(verbose_name="Nationality", max_length=50, blank=False)
-    nid_number = models.CharField(verbose_name="National ID Number", max_length=50, unique=True, blank=True)
+    volume_number = models.CharField(verbose_name="Volume Number", max_length=50, unique=True, blank=False, null=False)
+    nid_number = models.CharField(verbose_name="NID Card Number", max_length=50, unique=True, blank=True, null=True)
     birthdate = models.DateField(verbose_name="Birthdate", blank=False)
-    picture = models.ImageField(
-        verbose_name="Image",
-        upload_to="citizen/images/",
-        validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])],
-        blank=True, null=True
-    )
     createdDate = models.DateField(verbose_name="Created Date", auto_now_add=True)
-
-    def image(self):
-        return mark_safe('<img src="/../../media/%s" width="70" />' % (self.picture))
-
-    image.allow_tags = True
 
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
@@ -80,7 +69,7 @@ class CitizenParent(models.Model):
 class IDCardRegistration(models.Model):
     recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
     citizen = models.ForeignKey(Citizen, verbose_name="Citizen", on_delete=models.CASCADE)
-    resident_address = models.ForeignKey(Colline, verbose_name="Resident Address", related_name="registrations", on_delete=models.SET_NULL, blank=True, null=True)
+    resident_address = models.ForeignKey(Commune, verbose_name="Resident Address", related_name="registrations", on_delete=models.SET_NULL, blank=True, null=True)
     picture = models.ImageField(
         verbose_name="Citizen Image",
         upload_to="registration/citizen/images/",
@@ -104,11 +93,30 @@ class RegisteredIDCard(models.Model):
     citizen = models.ForeignKey(Citizen, verbose_name="Citizen", on_delete=models.CASCADE)
     card_number = models.CharField(verbose_name="ID Number", max_length=20)
     is_taken = models.BooleanField(verbose_name="Is taken?", default=False)
+    placeofissue = models.ForeignKey(Commune, verbose_name="Place of Issue", related_name="registerd_idcard", on_delete=models.SET_NULL, blank=True, null=True)
     created_date = models.DateField(verbose_name="Date created", auto_now_add=True)
     taken_date = models.DateField(verbose_name="Date taken")
 
     def __str__(self):
-        return f"Registered ID Card - Card Number: {self.card_number}, User: {self.user}"
+        return f"Registered ID Card - Card Number: {self.card_number}, User: {self.citizen.first_name} {self.citizen.last_name}"
+
+
+
+
+
+class RejectedIDCardApplication(models.Model):
+    class RejectReason(models.TextChoices):
+        SELECT = "", "Select Reason to reject"
+        BAD_PICTURE = "Bad Picture", "Bad Picture"
+
+    recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    application = models.ForeignKey(IDCardRegistration, verbose_name="Application", on_delete=models.CASCADE)
+    rejected_reason = models.CharField(verbose_name="Why rejected", choices=RejectReason.choices, default=RejectReason.BAD_PICTURE, max_length=20)
+    created_date = models.DateField(verbose_name="Created Date", auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.rejected_reason},"
+
 
 
 

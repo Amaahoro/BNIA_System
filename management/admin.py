@@ -75,19 +75,19 @@ class Colline(admin.ModelAdmin):
 
 @admin.register(Citizen)
 class CitizenAdmin(admin.ModelAdmin):
-    list_display = ('first_name','last_name','gender','birth_place','nationality','birthdate','image')
+    list_display = ('first_name','last_name','gender','birth_place','volume_number','birthdate',)
     list_filter = ('birthdate',)
     fieldsets = (
         ('Citizen Info', {'fields': (
-            'recorded_by', 'first_name', 'last_name', 'gender', 'birth_place', 'nationality', 'nid_number', 'birthdate', 'picture', 'createdDate',
+            'recorded_by', 'first_name', 'last_name', 'gender', 'birth_place', 'volume_number', 'nid_number', 'birthdate', 'createdDate',
         )}),
     )
     add_fieldsets = (
         ('Register New Citizen', {'fields': (
-            'recorded_by', 'first_name', 'last_name', 'gender', 'birth_place', 'nationality', 'nid_number', 'birthdate', 'picture', 'createdDate',
+            'recorded_by', 'first_name', 'last_name', 'gender', 'birth_place', 'volume_number', 'nid_number', 'birthdate', 'createdDate',
         )}),
     )
-    search_fields = ('first_name', 'last_name', 'nid_number',)
+    search_fields = ('first_name', 'last_name', 'volume_number', 'nid_number',)
     ordering = ('createdDate',)
     list_per_page = 20
     inlines = [
@@ -134,16 +134,16 @@ class IDCardRegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(RegisteredIDCard)
 class RegisteredIDCardAdmin(admin.ModelAdmin):
-    list_display = ('citizen','card_number','created_date','is_taken','taken_date',)
+    list_display = ('citizen','card_number','created_date','is_taken','placeofissue','taken_date',)
     list_filter = ('is_taken',)
     fieldsets = (
-        ('ID Card Registration Info', {'fields': ('recorded_by','citizen','card_number','created_date','is_taken','taken_date',)}),
+        ('ID Card Registration Info', {'fields': ('recorded_by','citizen','card_number','created_date','is_taken','placeofissue','taken_date',)}),
     )
     add_fieldsets = (
-        ('New ID Card Registration', {'fields': ('recorded_by','citizen','card_number','created_date','is_taken','taken_date',)}),
+        ('New ID Card Registration', {'fields': ('recorded_by','citizen','card_number','created_date','is_taken','placeofissue','taken_date',)}),
     )
     search_fields = ('card_number',)
-    ordering = ('is_taken',)
+    ordering = ('is_taken','placeofissue',)
     list_per_page = 20
 
     def get_readonly_fields(self, request, obj=None):
@@ -162,6 +162,23 @@ class LostIDCardReportAdmin(admin.ModelAdmin):
         ('New Lost ID Card Report', {'fields': ('recorded_by','citizen','card_number','date_lost','description','contact_info','created_date',)}),
     )
     search_fields = ('card_number','contact_info',)
+    ordering = ('created_date',)
+    list_per_page = 20
+
+    def get_readonly_fields(self, request, obj=None):
+        return ['created_date',]
+
+
+@admin.register(RejectedIDCardApplication)
+class RejectedIDCardApplicationAdmin(admin.ModelAdmin):
+    list_display = ('application','rejected_reason','created_date',)
+    list_filter = ('created_date',)
+    fieldsets = (
+        ('Rejected ID Card Application Info', {'fields': ('recorded_by','application','rejected_reason','created_date',)}),
+    )
+    add_fieldsets = (
+        ('New Rejected ID Card Application', {'fields': ('recorded_by','application','rejected_reason','created_date',)}),
+    )
     ordering = ('created_date',)
     list_per_page = 20
 
