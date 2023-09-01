@@ -18,7 +18,7 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         ('New User', {
             'classes': ('wide',),
-            'fields': ('first_name', 'last_name', 'gender', 'gender', 'commune', 'phone', ('profilePicture',),),
+            'fields': ('first_name', 'last_name', 'gender', 'commune', 'phone', ('profilePicture',),),
         }),
         ('Permission', {
             'classes': ('collapse',),

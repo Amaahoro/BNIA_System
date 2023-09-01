@@ -1,0 +1,124 @@
+{% load static %}
+
+<div class="mobile-menu-area">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="mobile-menu">
+          <nav id="dropdown">
+            <ul class="mobile-menu-nav">
+              <li>
+                <a href="{% url 'adm_dashboard' %}">
+                  Dashboard
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  All Services
+                </a>
+              </li>
+              <li>
+                <a data-toggle="collapse" data-target="#staff_member" href="#">
+                  Organization
+                </a>
+                <ul id="staff_member" class="collapse dropdown-header-top">
+                  <li><a href="">Administrator</a></li>
+                  <li><a href="">Chiefs of Commines</a></li>
+                  <li><a href="">Territorial Divisions</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">
+                  Citizens List
+                </a>
+              </li>
+              <li>
+                <a data-toggle="collapse" data-target="#demodepart" href="#">
+                  National ID Card
+                </a>
+                <ul id="demodepart" class="collapse dropdown-header-top">
+                  <li><a href="">Registered ID Card</a></li>
+                  <li><a href="">ID Card Application</a></li>
+                  <li><a href="">Lost ID Card Report</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="">Publication</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Mobile Menu end -->
+<!-- Main Menu area start-->
+<div class="main-menu-area mg-tb-40">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <ul class="nav nav-tabs notika-menu-wrap menu-it-icon-pro">
+          <li class="active">
+            <a href="{% url 'adm_dashboard' %}">
+              <i class="fa fa-dashboard"></i> 
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <i class="fa fa-clipboard"></i> 
+              All Services
+            </a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#organization_tab">
+              <i class="fa fa-server"></i> 
+              Organization
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <i class="fa fa-list"></i> 
+              Citizens List
+            </a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#idcard_tab">
+              <i class="notika-icon notika-windows"></i> 
+              National ID Card
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <i class="notika-icon notika-windows"></i> 
+              Publication
+            </a>
+          </li>
+        </ul>
+        <div class="tab-content custom-menu-content">
+          <div
+            id="organization_tab"
+            class="tab-pane notika-tab-menu-bg animated flipInX"
+          >
+            <ul class="notika-main-menu-dropdown">
+              <li><a href="">Administrator</a></li>
+              <li><a href="">Chiefs of Commines</a></li>
+              <li><a href="">Territorial Divisions</a></li>
+            </ul>
+          </div>
+          <div
+            id="idcard_tab" 
+            class="tab-pane notika-tab-menu-bg animated flipInX"
+          >
+            <ul class="notika-main-menu-dropdown">
+              <li><a href="">Registered ID Card</a></li>
+              <li><a href="">ID Card Application</a></li>
+              <li><a href="">Lost ID Card Report</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
