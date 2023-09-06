@@ -392,6 +392,234 @@ def adm_provinceDetails(request, pk):
 
 
 
+@login_required(login_url='registrar_login')
+def adm_communes(request):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        if 'new_commune' in request.POST:
+            province_id = request.POST.get("province")
+            commune_name = request.POST.get("commune_name")
+
+            if province_id and commune_name:
+                # commune_name=commune_name.upper()
+                found_data = Commune.objects.filter(province=province_id,commune_name=commune_name)
+                if found_data:
+                    messages.warning(request, "The Commune " +
+                                     commune_name+", Already exist.")
+                    return redirect(adm_communes)
+                else:
+                    # add new commune
+                    addCommune = Commune(
+                        province=Province.objects.get(id=province_id),
+                        commune_name=commune_name
+                    )
+                    addCommune.save()
+
+                    messages.success(
+                        request, "New Commune created successfully.")
+                    return redirect(adm_communes)
+            else:
+                messages.error(request, "Error , All fields are required!")
+                return redirect(adm_communes)
+        else:
+            # request_data = Application.objects.filter(status="Waiting")
+            # getting province
+            ProvinceData = Province.objects.filter().order_by('province_name')
+            # getting communes
+            CommuneData = Commune.objects.filter().order_by('province','commune_name')
+            context = {
+                'title': 'National Administrator - Commune List',
+                'commune_active': 'active',
+                'communes': CommuneData,
+                'provinces': ProvinceData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'management/administrator/commune_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='registrar_login')
+def adm_communeDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        commune_id = pk
+        # getting commune
+        if Commune.objects.filter(id=commune_id).exists():
+            # if exists
+            foundData = Commune.objects.get(id=commune_id)
+
+            if 'update_commune' in request.POST:
+                # Retrieve the form data from the request
+                province_id = request.POST.get("province")
+                commune_name = request.POST.get("commune_name")
+
+                if province_id and commune_name:
+                    if Commune.objects.filter(province=province_id,commune_name=commune_name).exclude(id=commune_id):
+                        messages.warning(
+                            request, "Commune name already exist.")
+                        return redirect(adm_communeDetails, pk)
+                    else:
+                        # Update Commune
+                        commune_updated = Commune.objects.filter(id=commune_id).update(
+                            province=Province.objects.get(id=province_id),
+                            commune_name=commune_name
+                        )
+                        if commune_updated:
+                            messages.success(
+                                request, "Commune "+commune_name+", Updated successfully.")
+                            return redirect(adm_communeDetails, pk)
+                        else:
+                            messages.error(request, ('Process Failed.'))
+                            return redirect(adm_communeDetails, pk)
+                else:
+                    messages.error(request, ('Commune name is required.'))
+                    return redirect(adm_communeDetails, pk)
+
+            elif 'delete_commune' in request.POST:
+                # Delete commune
+                delete_commune = Commune.objects.get(id=commune_id)
+                delete_commune.delete()
+                messages.success(request, "Commune info deleted successfully.")
+                return redirect(adm_communes)
+
+            else:
+                # request_data = Application.objects.filter(status="Waiting")
+                
+                # getting province
+                ProvinceData = Province.objects.filter().order_by('province_name')
+                context = {
+                    'title': 'National Administrator - Commune Info',
+                    'commune_active': 'active',
+                    'commune': foundData,
+                    'provinces': ProvinceData,
+                    # 'request_data': request_data,
+                }
+                return render(request, 'management/administrator/commune_details.html', context)
+        else:
+            messages.error(request, ('Commune not found'))
+            return redirect(adm_communes)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+
+@login_required(login_url='registrar_login')
+def adm_collines(request):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        if 'new_colline' in request.POST:
+            commune_id = request.POST.get("commune")
+            colline_name = request.POST.get("colline_name")
+
+            if commune_id and colline_name:
+                # colline_name=colline_name.upper()
+                found_data = Colline.objects.filter(commune=commune_id,colline_name=colline_name)
+                if found_data:
+                    messages.warning(request, "The Commune " +
+                                     colline_name+", Already exist.")
+                    return redirect(adm_collines)
+                else:
+                    # add new colline
+                    addColline = Colline(
+                        commune=Commune.objects.get(id=commune_id),
+                        colline_name=colline_name
+                    )
+                    addColline.save()
+
+                    messages.success(
+                        request, "New Colline created successfully.")
+                    return redirect(adm_collines)
+            else:
+                messages.error(request, "Error , All fields are required!")
+                return redirect(adm_collines)
+        else:
+            # request_data = Application.objects.filter(status="Waiting")
+            # getting commune
+            CommuneData = Commune.objects.filter().order_by('commune_name')
+            # getting collines
+            CollineData = Colline.objects.filter().order_by('commune','colline_name')
+            context = {
+                'title': 'National Administrator - Colline List',
+                'colline_active': 'active',
+                'collines': CollineData,
+                'communes': CommuneData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'management/administrator/colline_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='registrar_login')
+def adm_collineDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        colline_id = pk
+        # getting commune
+        if Colline.objects.filter(id=colline_id).exists():
+            # if exists
+            foundData = Colline.objects.get(id=colline_id)
+
+            if 'update_colline' in request.POST:
+                # Retrieve the form data from the request
+                commune_id = request.POST.get("commune")
+                colline_name = request.POST.get("colline_name")
+
+                if commune_id and colline_name:
+                    if Colline.objects.filter(commune=commune_id,colline_name=colline_name).exclude(id=colline_id):
+                        messages.warning(
+                            request, "Colline name already exist.")
+                        return redirect(adm_collineDetails, pk)
+                    else:
+                        # Update Colline
+                        colline_updated = Colline.objects.filter(id=colline_id).update(
+                            commune=Commune.objects.get(id=commune_id),
+                            colline_name=colline_name
+                        )
+                        if colline_updated:
+                            messages.success(
+                                request, "Colline "+colline_name+", Updated successfully.")
+                            return redirect(adm_collineDetails, pk)
+                        else:
+                            messages.error(request, ('Process Failed.'))
+                            return redirect(adm_collineDetails, pk)
+                else:
+                    messages.error(request, ('Colline name is required.'))
+                    return redirect(adm_collineDetails, pk)
+
+            elif 'delete_colline' in request.POST:
+                # Delete colline
+                delete_colline = Colline.objects.get(id=colline_id)
+                delete_colline.delete()
+                messages.success(request, "Colline info deleted successfully.")
+                return redirect(adm_collines)
+
+            else:
+                # request_data = Application.objects.filter(status="Waiting")
+                
+                # getting commune
+                communeData = Commune.objects.filter().order_by('commune_name')
+                context = {
+                    'title': 'National Administrator - Colline Info',
+                    'colline_active': 'active',
+                    'colline': foundData,
+                    'communes': communeData,
+                    # 'request_data': request_data,
+                }
+                return render(request, 'management/administrator/colline_details.html', context)
+        else:
+            messages.error(request, ('Colline not found'))
+            return redirect(adm_collines)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+
 
 
 

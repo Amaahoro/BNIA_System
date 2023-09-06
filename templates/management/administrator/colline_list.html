@@ -1,0 +1,147 @@
+{% extends "management/administrator/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colline List</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>Colline List</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'adm_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Colline List
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">Colline List</h4>
+        </div>
+        <div class="card-body pb-20">
+          <button
+            type="button"
+            class="btn btn-info float-right"
+            data-toggle="modal"
+            data-target="#serviceModal"
+          >
+            <i class="fa fa-plus"></i>
+            New Colline
+          </button>
+          <table class="data-table table stripe hover nowrap">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th class="table-plus datatable-nosort">Colline Name</th>
+                <th>Commune</th>
+                <th class="datatable-nosort">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for colline in collines %}
+              <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td class="table-plus">{{ colline.colline_name }}</td>
+                <td>{{ colline.commune.commune_name }}</td>
+                <td>
+                  <a href="{% url 'adm_collineDetails' colline.id %}">
+                    <i class="dw dw-eye"></i> View
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="serviceModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="serviceModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="serviceModalTitle">
+              REGISTER NEW COLLINE
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="form-group mb-0">
+                <label class="col-form-label">Commune Name</label>
+                <select
+                  id="inputStatus"
+                  name="commune"
+                  class="form-control custom-select"
+                  required
+                >
+                  <option selected disabled>Select Commune</option>
+                  {% if communes %}{% for commune in communes %}
+                  <option value="{{commune.id}}">{{commune.commune_name}}</option>
+                  {% endfor %}{% endif %}
+                </select>
+              </div>
+              <div class="form-group mb-0">
+                <label class="col-form-label">Colline Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="colline_name"
+                  placeholder="Colline ..."
+                  required
+                />
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" name="new_colline" class="btn btn-success">
+                <i class="fa fa-save"></i>
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>
