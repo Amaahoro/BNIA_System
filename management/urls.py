@@ -16,4 +16,8 @@ urlpatterns = [
     # national administator
     path('bnia/administrator/dashboard/', views.adm_dashboard, name='adm_dashboard'),
     path('bnia/administrator/profile/', views.adm_profile, name='adm_profile'),
+    path('bnia/administrator/services/', views.adm_services, name='adm_services'),
+    path('bnia/administrator/services/<int:pk>/service_details/', views.adm_serviceDetails, name='adm_serviceDetails'),
+    path('bnia/administrator/territorial/provinces/', views.adm_provinces, name='adm_provinces'),
+    path('bnia/administrator/territorial/provinces/<int:pk>/province_details/', views.adm_provinceDetails, name='adm_provinceDetails'),
 ]

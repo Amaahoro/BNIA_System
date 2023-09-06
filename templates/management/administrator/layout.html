@@ -1,0 +1,43 @@
+{% extends "management/main.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Layout</title>
+  </head>
+
+  <body>
+    {% block main_content %}
+
+    <!-- ======= Header ======= -->
+    {% include 'management/administrator/includes/header.html' %}
+    <!-- /======= Header ======= -->
+
+    <!-- ======= Controller ======= -->
+    {% include 'management/administrator/includes/controller.html' %}
+    <!-- /======= Controller ======= -->
+
+    <!-- ======= Sidebar ======= -->
+    {% include 'management/administrator/includes/sidebar.html' %}
+    <!-- /======= Sidebar ======= -->
+
+    <div class="mobile-menu-overlay"></div>
+
+    <div class="main-container">
+      <div class="xs-pd-20-10 pd-ltr-20">
+        <!-- /======= Page content ======= -->
+        {% block page_content %}{% endblock %}
+        <!-- /======= Page content ======= -->
+
+        <!-- ======= Footer ======= -->
+        {% include 'management/footer.html' %}
+        <!-- /======= Header ======= -->
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

@@ -10,76 +10,111 @@
     {% else %}
     <title>BNIA</title>
     {% endif%}
-    
-    <!-- favicon -->
-    <link rel="icon" type="image/jpg" href="{% static 'front/images/nation_logo.png' %}" />
 
-    <!-- Google Fonts
-		============================================ -->
+    <!-- favicon -->
     <link
-      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900"
+      rel="icon"
+      type="image/jpg"
+      href="{% static 'front/images/nation_logo.png' %}"
+    />
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="{% static 'staff/css/bootstrap.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/font-awesome.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/owl.carousel.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/owl.theme.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/owl.transitions.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/meanmenu/meanmenu.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/animate.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/normalize.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/scrollbar/jquery.mCustomScrollbar.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/jvectormap/jquery-jvectormap-2.0.3.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/notika-custom-icon.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/wave/waves.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/main.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'staff/css/responsive.css' %}" />
-    <script src="{% static 'staff/js/vendor/modernizr-2.8.3.min.js' %}"></script>
+    <!-- CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'staff/vendors/styles/core.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'staff/vendors/styles/icon-font.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'staff/src/plugins/datatables/css/dataTables.bootstrap4.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'staff/src/plugins/datatables/css/responsive.bootstrap4.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'staff/vendors/styles/style.css' %}"
+    />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-119386393-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-119386393-1");
+    </script>
   </head>
-
   <body>
-    
+    <!-- /======= Pre-loader =======
+    <div class="pre-loader">
+      <div class="pre-loader-box">
+        <div class="loader-logo">
+          <img
+            src="{% static 'front/images/nation_logo.png' %}"
+            width="100"
+            alt=""
+          />
+        </div>
+        <div class="loader-progress" id="progress_div">
+          <div class="bar" id="bar1"></div>
+        </div>
+        <div class="percent" id="percent1">0%</div>
+        <div class="loading-text">Loading...</div>
+      </div>
+    </div> -->
+    <!-- /======= Pre-loader ======= -->
 
+    <!-- ======= Main content ======= -->
     {% block main_content %} {% endblock %}
+    <!-- /======= Main content ======= -->
 
+    {% if messages %} {% for message in messages %}
+    <script>
+      //<!--contents message displayed-->
+      alert("{{ message }}");
+      //<!-- / .contents message displayed-->
+    </script>
+    {% endfor %} {% endif %}
 
-    <!-- ======= Footer ======= -->
-    {% include 'management/footer.html' %}
-    <!-- End Footer -->
-
-
-
-		<!-- ============================================ -->
-    <script src="{% static 'staff/js/vendor/jquery-1.12.4.min.js' %}"></script>
-    <script src="{% static 'staff/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'staff/js/wow.min.js' %}"></script>
-    <script src="{% static 'staff/js/jquery-price-slider.js' %}"></script>
-    <script src="{% static 'staff/js/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'staff/js/jquery.scrollUp.min.js' %}"></script>
-    <script src="{% static 'staff/js/meanmenu/jquery.meanmenu.js' %}"></script>
-    <script src="{% static 'staff/js/counterup/jquery.counterup.min.js' %}"></script>
-    <script src="{% static 'staff/js/counterup/waypoints.min.js' %}"></script>
-    <script src="{% static 'staff/js/counterup/counterup-active.js' %}"></script>
-    <script src="{% static 'staff/js/scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
-    <script src="{% static 'staff/js/jvectormap/jquery-jvectormap-2.0.2.min.js' %}"></script>
-    <script src="{% static 'staff/js/jvectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
-    <script src="{% static 'staff/js/jvectormap/jvectormap-active.js' %}"></script>
-    <script src="{% static 'staff/js/sparkline/jquery.sparkline.min.js' %}"></script>
-    <script src="{% static 'staff/js/sparkline/sparkline-active.js' %}"></script>
-    <script src="{% static 'staff/js/flot/jquery.flot.js' %}"></script>
-    <script src="{% static 'staff/js/flot/jquery.flot.resize.js' %}"></script>
-    <script src="{% static 'staff/js/flot/curvedLines.js' %}"></script>
-    <script src="{% static 'staff/js/flot/flot-active.js' %}"></script>
-    <script src="{% static 'staff/js/knob/jquery.knob.js' %}"></script>
-    <script src="{% static 'staff/js/knob/jquery.appear.js' %}"></script>
-    <script src="{% static 'staff/js/knob/knob-active.js' %}"></script>
-    <script src="{% static 'staff/js/wave/waves.min.js' %}"></script>
-    <script src="{% static 'staff/js/wave/wave-active.js' %}"></script>
-    <script src="{% static 'staff/js/todo/jquery.todo.js' %}"></script>
-    <script src="{% static 'staff/js/plugins.js' %}"></script>
-    <script src="{% static 'staff/js/chat/moment.min.js' %}"></script>
-    <script src="{% static 'staff/js/chat/jquery.chat.js' %}"></script>
-    <script src="{% static 'staff/js/main.js' %}"></script>
+    <!-- js -->
+    <script src="{% static 'staff/vendors/scripts/core.js' %}"></script>
+    <script src="{% static 'staff/vendors/scripts/script.min.js' %}"></script>
+    <script src="{% static 'staff/vendors/scripts/process.js' %}"></script>
+    <script src="{% static 'staff/vendors/scripts/layout-settings.js' %}"></script>
+    <script src="{% static 'staff/src/plugins/datatables/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'staff/src/plugins/datatables/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'staff/src/plugins/datatables/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'staff/src/plugins/datatables/js/responsive.bootstrap4.min.js' %}"></script>
+    <!-- buttons for Export datatable -->
+    <script src="{% static 'staff/src/plugins/datatables/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'staff/src/plugins/datatables/js/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'staff/src/plugins/datatables/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'staff/src/plugins/datatables/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'staff/src/plugins/datatables/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'staff/src/plugins/datatables/js/pdfmake.min.js' %}"></script>
+    <script src="{% static 'staff/src/plugins/datatables/js/vfs_fonts.js' %}"></script>
+    <!-- Datatable Setting js -->
+    <script src="{% static 'staff/vendors/scripts/datatable-setting.js' %}"></script>
   </body>
 </html>

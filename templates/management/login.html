@@ -1,92 +1,177 @@
-{% extends "management/main.html" %}
 <!DOCTYPE html>
 <html lang="en">
   {% load static %}
-
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    {% if title %}
+    <title>BNIA - {{ title }}</title>
+    {% else %}
+    <title>BNIA</title>
+    {% endif%}
+
+    <!-- favicon -->
+    <link
+      rel="icon"
+      type="image/jpg"
+      href="{% static 'front/images/nation_logo.png' %}"
+    />
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'staff/vendors/styles/core.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="vendors/styles/icon-font.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'staff/vendors/styles/style.css' %}"
+    />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-119386393-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-119386393-1");
+    </script>
   </head>
-
-  <body>
-    {% block main_content%}
-
-    <div class="header bg-white">
+  <body class="login-page">
+    <div class="login-header box-shadow">
+      <div
+        class="container-fluid d-flex justify-content-between align-items-center"
+      >
+        <div class="brand-logo">
+          <a href="{% url 'home' %}">
+            <img
+              src="{% static 'front/images/nation_logo.png' %}"
+              width="60px"
+              alt=""
+            />
+            <span class="text-dark h3 pt-2">BNIA.</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      class="login-wrap d-flex align-items-center flex-wrap justify-content-center"
+    >
       <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <div class="logo-area"></div>
+        <div class="row align-items-center">
+          <div class="col-md-6 col-lg-7">
+            <img
+              src="{% static 'staff/vendors/images/login-page-img.png' %}"
+              alt=""
+            />
+          </div>
+          <div class="col-md-6 col-lg-5">
+            <div class="login-box bg-white box-shadow border-radius-10">
+              <div class="login-title">
+                <h2 class="text-center">Staff Login</h2>
+              </div>
+              <hr />
+              <form action="" method="post">
+                {% csrf_token %}
+                <p class="text-center">
+                  Provide informations below to continue
+                </p>
+                <div class="input-group custom">
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    class="form-control form-control-lg"
+                    placeholder="Email"
+                    required
+                  />
+                  <div class="input-group-append custom">
+                    <span class="input-group-text"
+                      ><i class="fa fa-user"></i
+                    ></span>
+                  </div>
+                </div>
+                <div class="input-group custom">
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    class="form-control form-control-lg"
+                    placeholder="Password"
+                    required
+                  />
+                  <div class="input-group-append custom">
+                    <span class="input-group-text"
+                      ><i class="fa fa-lock"></i
+                    ></span>
+                  </div>
+                </div>
+                <div class="row pb-30">
+                  <div class="col-6">
+                    <div class="custom-control custom-checkbox">
+                      <input
+                        type="checkbox"
+                        class="custom-control-input"
+                        id="customCheck1"
+                      />
+                      <label class="custom-control-label" for="customCheck1"
+                        >Remember</label
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="input-group mb-0">
+                      <!--
+											use code for form submit
+											<input class="btn btn-primary btn-lg btn-block" type="submit" value="Sign In">
+										-->
+                      <button
+                        type="submit"
+                        class="btn btn-success btn-lg btn-block"
+                      >
+                        Sign In
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Login Register area Start-->
-    <div class="login-content">
-      <!-- Login -->
-      <div class="nk-block toggled" id="l-login">
-        <div class="head">
-          <h1>
-            <img
-              width="60"
-              class="bg-light"
-              src="{% static 'front/images/nation_logo.png' %}"
-            />
-            <span class="">BNIA.</span>
-          </h1>
-        </div>
-        <br />
-        <br />
-        <h3>Staff Login</h3>
-        <p>Login to continue</p>
-        <div class="nk-form">
-          <form action="" method="post">
-            {% csrf_token %}
-            <div class="input-group">
-              <span class="input-group-addon nk-ic-st-pro">
-                <i class="fa fa-user"></i>
-              </span>
-              <div class="nk-int-st">
-                <input 
-                  type="email" 
-                  class="form-control"
-                  placeholder="email@example.com"
-                  name="email"
-                  required 
-                />
-              </div>
-            </div>
-            <div class="input-group mg-t-15">
-              <span class="input-group-addon nk-ic-st-pro">
-                <i class="fa fa-lock"></i>
-              </span>
-              <div class="nk-int-st">
-                <input
-                  type="password"
-                  class="form-control"
-                  placeholder="*********"
-                  name="password"
-                  required
-                />
-              </div>
-            </div>
-            <div class="text-center mg-t-20">
-              <button class="btn btn-block btn-login btn-success">
-                <i class="fa fa-sign-in"></i> Sign In
-              </button>
-              <hr />
-              <a class="mg-t-20 text-primary" href="{% url 'home' %}">
-                <i class="fa fa-arrow-left"></i> Back to Homepage
-              </a>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    <!-- Login Register area End-->
-
-    {% endblock %}
+    {% if messages %} {% for message in messages %}
+    <script>
+      //<!--contents message displayed-->
+      alert("{{ message }}");
+      //<!-- / .contents message displayed-->
+    </script>
+    {% endfor %} {% endif %}
+    <!-- js -->
+    <script src="{% static 'staff/vendors/scripts/core.js' %}"></script>
+    <script src="{% static 'staff/vendors/scripts/script.min.js' %}"></script>
+    <script src="{% static 'staff/vendors/scripts/process.js' %}"></script>
+    <script src="{% static 'staff/vendors/scripts/layout-settings.js' %}"></script>
   </body>
 </html>

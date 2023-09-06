@@ -1,52 +1,50 @@
 {% load static %}
-<div class="header-top-area">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-        <div class="logo-area">
-        <h3 style="margin:0">
-          <a href="{% url 'adm_dashboard' %}" style="margin:0; color:white">
-            <img width="50px" src="{% static 'front/images/nation_logo.png' %}" alt="" /> <span class="">BNIA.</span>
-          </a>
-        </h3>
-        </div>
-          
+<div class="header">
+  <div class="header-left">
+    <div class="menu-icon dw dw-menu"></div>
+    <div class="container mx-4">
+      <h4>BNIA | National Administrator</h4>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="dashboard-setting user-notification">
+      <div class="dropdown">
+        <a
+          class="dropdown-toggle no-arrow"
+          href="javascript:;"
+          data-toggle="right-sidebar"
+        >
+          <i class="dw dw-settings2"></i>
+        </a>
       </div>
-      <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-        <div class="header-top-menu" style="margin-top: 20px">
-          <ul class="nav navbar-nav notika-top-nav">
-            <li class="nav-item"><a style="font-size: medium">Nation Administrator |</a></li>
-            <li class="nav-item">
-              <a style="font-size: medium"
-                class="dropdown-toggle text-sm"
-                href="#"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                {% if user.profilePicture %}
-                <img class="avatar" src="{{user.profilePicture.url}}" alt="" />
-                {% else %}
-                <i class="fa fa-user"></i>
-                {% endif %}
-                <span class="">{{user.first_name}}</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-right triger-fadeIn-dp"
-              aria-labelledby="userDropdown"
-              role="menu">
-                <li>
-                  <a class="dropdown-item" href="{% url 'adm_profile' %}" style="font-size: medium">
-                    <i class="fa fa-user"></i> Profile
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{% url 'staff_logout' %}" style="font-size: medium">
-                    <i class="fa fa-sign-out"></i> Logout
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
+    </div>
+    <div class="user-info-dropdown">
+      <div class="dropdown">
+        <a
+          class="dropdown-toggle"
+          href="#"
+          role="button"
+          data-toggle="dropdown"
+        >
+          <span class="user-icon">
+            {% if user.profilePicture %}
+            <img src="{{user.profilePicture.url}}" alt="" />
+            {% else %}
+            <img
+              src="{% static 'staff/vendors/images/anonymous.png' %}"
+              alt=""
+            />
+            {% endif %}
+          </span>
+          <span class="user-name">{{user.first_name}} {{user.last_name}}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+          <a class="dropdown-item" href="{% url 'adm_profile' %}"
+            ><i class="dw dw-user1"></i> Profile</a
+          >
+          <a class="dropdown-item" href="{% url 'staff_logout' %}"
+            ><i class="dw dw-logout"></i> Log Out</a
+          >
         </div>
       </div>
     </div>

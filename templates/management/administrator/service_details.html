@@ -1,0 +1,205 @@
+{% extends "management/administrator/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Service Details</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>Service Details</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'adm_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'adm_services' %}">Service List</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Service Details
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+    
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">Services List</h4>
+        </div>
+        <div class="card-body pb-20">
+            <button
+              type="button"
+              class="btn btn-light btn-rounded float-right"
+              data-toggle="modal"
+              data-target="#delete_confirmation"
+            >
+              <i class="fa fa-trash text-danger"></i> Delete
+            </button>
+            <button
+              type="button"
+              class="btn btn-light btn-rounded float-right mr-1"
+              data-toggle="modal"
+              data-target="#serviceModal"
+            >
+              <i class="fa fa-edit text-primary"></i> Edit
+            </button>
+            <div class="row">
+              <div class="col-lg-12 mb-3">
+                <span class="font-weight-bold">Service Name:</span>
+                <h4 class="title">{{ service.service_name }}</h4>
+              </div>
+              <div class="col-lg-12 mb-3">
+                <span class="font-weight-bold">Requirement:</span>
+                <p class="content text-lg">{{ service.requirements|linebreaksbr }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="serviceModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="serviceModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="serviceModalTitle">
+              <i class="fa fa-edit"></i>
+              EDIT SERVICE DETAILS
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="form-group mb-0">
+                <label class="col-form-label">Service Name</label>
+                <select
+                  id="inputStatus"
+                  name="service_name"
+                  class="form-control custom-select"
+                  required
+                >
+                  <option disabled>Select Service</option>
+                  <option {% if service.service_name == "NID Application" %} selected {% endif %} value="NID Application">NID Application</option>
+                  <option {% if service.service_name == "NID Loss Process" %} selected {% endif %} value="NID Loss Process">NID Loss Process</option>
+                  <option {% if service.service_name == "NID Correction process" %} selected {% endif %} value="NID Correction process">
+                    NID Correction process
+                  </option>
+                </select>
+              </div>
+              <div class="form-group mb-0">
+                <label class="col-form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  rows="10"
+                  placeholder="Requirements ..."
+                  name="requirements"
+                >{{ service.requirements }} 
+                </textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="update_service"
+                class="btn btn-success"
+              >
+                <i class="fa fa-save"></i>
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="delete_confirmation"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="deleteModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalTitle">
+              <i class="fa fa-trash text-danger"></i> DELETE SERVICE
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <h6 align="center">
+                Are you sure you want to delete <br />
+                Service "{{service.service_name}}" ?
+              </h6>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="delete_service"
+                class="btn btn-danger"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

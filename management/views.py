@@ -181,6 +181,216 @@ def adm_profile(request):
 
 
 
+@login_required(login_url='registrar_login')
+def adm_services(request):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        if 'new_service' in request.POST:
+            service_name = request.POST.get("service_name")
+            requirements = request.POST.get("requirements")
+
+            if service_name:
+                # service_name=service_name.upper()
+                found_data = Service.objects.filter(service_name=service_name)
+                if found_data:
+                    messages.warning(request, "The service " +
+                                     service_name+", Already exist.")
+                    return redirect(adm_services)
+                else:
+                    # add new service
+                    add_service = Service(
+                        recorded_by=request.user,
+                        service_name=service_name,
+                        requirements=requirements,
+                    )
+                    add_service.save()
+
+                    messages.success(
+                        request, "New Service created successfully.")
+                    return redirect(adm_services)
+            else:
+                messages.error(request, "Error , Service name is required!")
+                return redirect(adm_services)
+        else:
+            # request_data = Application.objects.filter(status="Waiting")
+            # getting services
+            ServiceData = Service.objects.filter().order_by('service_name')
+            context = {
+                'title': 'National Administrator - Service List',
+                'service_active': 'active',
+                'services': ServiceData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'management/administrator/service_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='registrar_login')
+def adm_serviceDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        service_id = pk
+        # getting service
+        if Service.objects.filter(id=service_id).exists():
+            # if exists
+            foundData = Service.objects.get(id=service_id)
+
+            if 'update_service' in request.POST:
+                # Retrieve the form data from the request
+                service_name = request.POST.get('service_name')
+                requirements = request.POST.get('requirements')
+
+                if service_name:
+                    if Service.objects.filter(service_name=service_name).exclude(id=service_id):
+                        messages.warning(
+                            request, "Service name already exist.")
+                        return redirect(adm_serviceDetails, pk)
+                    else:
+                        # Update Service
+                        service_updated = Service.objects.filter(id=service_id).update(
+                            service_name=service_name,
+                            requirements=requirements,
+                        )
+                        if service_updated:
+                            messages.success(
+                                request, "Service "+service_name+", Updated successfully.")
+                            return redirect(adm_serviceDetails, pk)
+                        else:
+                            messages.error(request, ('Process Failed.'))
+                            return redirect(adm_serviceDetails, pk)
+                else:
+                    messages.error(request, ('Service name is required.'))
+                    return redirect(adm_serviceDetails, pk)
+
+            elif 'delete_service' in request.POST:
+                # Delete Service
+                delete_service = Service.objects.get(id=service_id)
+                delete_service.delete()
+                messages.success(request, "Service info deleted successfully.")
+                return redirect(adm_services)
+
+            else:
+                # request_data = Application.objects.filter(status="Waiting")
+                context = {
+                    'title': 'National Administrator - Service Info',
+                    'service_active': 'active',
+                    'service': foundData,
+                    # 'request_data': request_data,
+                }
+                return render(request, 'management/administrator/service_details.html', context)
+        else:
+            messages.error(request, ('Service not found'))
+            return redirect(adm_services)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+
+@login_required(login_url='registrar_login')
+def adm_provinces(request):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        if 'new_province' in request.POST:
+            province_name = request.POST.get("province_name")
+
+            if province_name:
+                # province_name=province_name.upper()
+                found_data = Province.objects.filter(province_name=province_name)
+                if found_data:
+                    messages.warning(request, "The province " +
+                                     province_name+", Already exist.")
+                    return redirect(adm_provinces)
+                else:
+                    # add new province
+                    addProvince = Province(
+                        province_name=province_name,
+                    )
+                    addProvince.save()
+
+                    messages.success(
+                        request, "New Province created successfully.")
+                    return redirect(adm_provinces)
+            else:
+                messages.error(request, "Error , Province name is required!")
+                return redirect(adm_provinces)
+        else:
+            # request_data = Application.objects.filter(status="Waiting")
+            # getting provinces
+            ProvinceData = Province.objects.filter().order_by('province_name')
+            context = {
+                'title': 'National Administrator - Province List',
+                'province_active': 'active',
+                'provinces': ProvinceData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'management/administrator/province_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='registrar_login')
+def adm_provinceDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        province_id = pk
+        # getting province
+        if Province.objects.filter(id=province_id).exists():
+            # if exists
+            foundData = Province.objects.get(id=province_id)
+
+            if 'update_province' in request.POST:
+                # Retrieve the form data from the request
+                province_name = request.POST.get('province_name')
+
+                if province_name:
+                    if Province.objects.filter(province_name=province_name).exclude(id=province_id):
+                        messages.warning(
+                            request, "Province name already exist.")
+                        return redirect(adm_provinceDetails, pk)
+                    else:
+                        # Update province
+                        province_updated = Province.objects.filter(id=province_id).update(
+                            province_name=province_name,
+                        )
+                        if province_updated:
+                            messages.success(
+                                request, "Province "+province_name+", Updated successfully.")
+                            return redirect(adm_provinceDetails, pk)
+                        else:
+                            messages.error(request, ('Process Failed.'))
+                            return redirect(adm_provinceDetails, pk)
+                else:
+                    messages.error(request, ('Province name is required.'))
+                    return redirect(adm_provinceDetails, pk)
+
+            elif 'delete_province' in request.POST:
+                # Delete province
+                delete_province = Province.objects.get(id=province_id)
+                delete_province.delete()
+                messages.success(request, "Province info deleted successfully.")
+                return redirect(adm_provinces)
+
+            else:
+                # request_data = Application.objects.filter(status="Waiting")
+                context = {
+                    'title': 'National Administrator - Province Info',
+                    'province_active': 'active',
+                    'province': foundData,
+                    # 'request_data': request_data,
+                }
+                return render(request, 'management/administrator/province_details.html', context)
+        else:
+            messages.error(request, ('Province not found'))
+            return redirect(adm_provinces)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
 
 
 
