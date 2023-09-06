@@ -1,0 +1,114 @@
+{% load static %}
+
+<div class="left-side-bar">
+  <div class="brand-logo">
+    <a href="{% url 'chief_dashboard' %}">
+      <img
+        src="{% static 'front/images/nation_logo.png' %}"
+        width="70"
+        alt=""
+        class="dark-logo"
+      />
+      <img
+        src="{% static 'front/images/nation_logo.png' %}"
+        width="70"
+        alt=""
+        class="light-logo"
+      />
+      <span class="mtext">Chief commune</span>
+    </a>
+    <div class="close-sidebar" data-toggle="left-sidebar-close">
+      <i class="ion-close-round"></i>
+    </div>
+  </div>
+  <div class="menu-block customscroll">
+    <div class="sidebar-menu">
+      <ul id="accordion-menu" class="py-3">
+        <li>
+          <div class="sidebar-small-cap"></div>
+        </li>
+        <li>
+          <a
+            href="{% url 'chief_dashboard' %}"
+            class="dropdown-toggle no-arrow"
+          >
+            <span class="micon dw dw-house-1"></span
+            ><span class="mtext">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <div class="dropdown-divider"></div>
+          <div class="sidebar-small-cap">Services</div>
+        </li>
+        <li class="dropdown">
+          <a href="{% url 'chief_services' %}" class="dropdown-toggle no-arrow">
+            <span class="micon dw dw-list"></span
+            ><span class="mtext">Services</span>
+          </a>
+        </li>
+        <li>
+          <div class="dropdown-divider"></div>
+          <div class="sidebar-small-cap">Citizenship</div>
+        </li>
+        <li class="dropdown">
+          <a href="" class="dropdown-toggle no-arrow">
+            <span class="micon dw dw-list"></span
+            ><span class="mtext">Citizens</span>
+          </a>
+        </li>
+        <li>
+          <div class="dropdown-divider"></div>
+          <div class="sidebar-small-cap">National Identity Card</div>
+        </li>
+        <li class="dropdown">
+          <a href="javascript:;" class="dropdown-toggle">
+            <span class="micon dw dw-list"></span
+            ><span class="mtext">NID Card Application</span>
+          </a>
+          <ul class="submenu">
+            <li>
+              <a href="">New Application</a>
+            </li>
+            <li>
+              <a href="">Approved Application</a>
+            </li>
+            <li>
+              <a href="">Rejected Application</a>
+            </li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="javascript:;" class="dropdown-toggle">
+            <span class="micon dw dw-list"></span
+            ><span class="mtext">Lost NID Card report</span>
+          </a>
+          <ul class="submenu">
+            <li><a href="">New Report</a></li>
+            <li><a href="">Approved Report</a></li>
+            <li><a href="">Rejected Report</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="" class="dropdown-toggle no-arrow">
+            <span class="micon dw dw-list"></span
+            ><span class="mtext">Registered NID Card</span>
+          </a>
+        </li>
+        <li>
+          <div class="dropdown-divider"></div>
+          <div class="sidebar-small-cap">Publication</div>
+        </li>
+        <li>
+          <a
+            href="{% url 'chief_publications' %}"
+            class="dropdown-toggle no-arrow"
+          >
+            <span class="micon dw dw-list"></span
+            ><span class="mtext">Publication</span>
+          </a>
+        </li>
+        <li class="mb-5"></li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+{% extends "management/commune/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Publication Details</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>Publication Details</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_publications' %}">Publication List</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Publication Details
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+    
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <span class="float-right">Date: {{ publication.publication_date }}</span>
+          <h4 class="h4">Publication Details</h4>
+        </div>
+        <div class="card-body pb-20">
+            <button
+              type="button"
+              class="btn btn-light btn-rounded float-right"
+              data-toggle="modal"
+              data-target="#delete_confirmation"
+            >
+              <i class="fa fa-trash text-danger"></i> Delete
+            </button>
+            <div class="row">
+              <div class="col-lg-12 mb-3">
+                <span class="font-weight-bold">Title:</span>
+                <h4 class="title">{{ publication.title }}</h4>
+              </div>
+              <div class="col-lg-12 mb-3">
+                <span class="font-weight-bold">File:</span>
+                <h6 class="subtitle">{{ publication.files }}
+                  <a class="text-info ml-5" href="{{ publication.files.url }}" download> 
+                    <i class="fa fa-download"></i>
+                     Dowload 
+                  </a>
+                </h6>
+              </div>
+              <div class="col-lg-12 mb-3">
+                <span class="font-weight-bold">Size File:</span>
+                <h6 class="subtitle">{{ publication.files.size|filesizeformat }}</h6>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

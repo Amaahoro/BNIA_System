@@ -867,6 +867,7 @@ def adm_publicationDetails(request, pk):
 # chief commune
 # ==========================================================
 
+
 @login_required(login_url='staff_login')
 def chief_dashboard(request):
     if request.user.is_authenticated and request.user.is_chief_commune == True:
@@ -874,7 +875,7 @@ def chief_dashboard(request):
         citizens = Citizen.objects.filter()
 
         context = {
-            'title': 'National Administrator - Dashboard',
+            'title': 'Chief Commune - Dashboard',
             'dash_active': 'active',
             'citizens': citizens,
         }
@@ -926,10 +927,101 @@ def chief_profile(request):
 
         else:
             context = {
-                'title': 'National Administrator - Profile',
+                'title': 'Chief Commune - Profile',
             }
             return render(request, 'management/commune/profile.html', context)
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def chief_services(request):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        # request_data = Application.objects.filter(status="Waiting")
+        # getting services
+        ServiceData = Service.objects.filter().order_by('service_name')
+        context = {
+            'title': 'Chief Commune - Service List',
+            'service_active': 'active',
+            'services': ServiceData,
+            # 'request_data': request_data,
+        }
+        return render(request, 'management/commune/service_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def chief_serviceDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        service_id = pk
+        # getting service
+        if Service.objects.filter(id=service_id).exists():
+            # if exists
+            foundData = Service.objects.get(id=service_id)
+
+            # request_data = Application.objects.filter(status="Waiting")
+            context = {
+                'title': 'Chief Commune - Service Info',
+                'service_active': 'active',
+                'service': foundData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'management/commune/service_details.html', context)
+        else:
+            messages.error(request, ('Service not found'))
+            return redirect(chief_services)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def chief_publications(request):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        # request_data = Application.objects.filter(status="Waiting")
+        # getting publications
+        PublicationData = Publication.objects.filter().order_by('publication_date')
+        context = {
+            'title': 'Chief Commune - Publications List',
+            'publication_active': 'active',
+            'publications': PublicationData,
+            # 'request_data': request_data,
+        }
+        return render(request, 'management/commune/publication_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def chief_publicationDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        publication_id = pk
+        # getting publication
+        if Publication.objects.filter(id=publication_id).exists():
+            # if exists
+            foundData = Publication.objects.get(id=publication_id)
+
+            # request_data = Application.objects.filter(status="Waiting")
+            context = {
+                'title': 'Chief Commune - Publication Info',
+                'publication_active': 'active',
+                'publication': foundData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'management/commune/publication_details.html', context)
+        else:
+            messages.error(request, ('Commune not found'))
+            return redirect(chief_publications)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
 
