@@ -52,7 +52,7 @@
               <tr>
                 <th>#</th>
                 <th class="table-plus datatable-nosort">Publication Title</th>
-                <th>Attachment</th>
+                <th>Size</th>
                 <th>Date</th>
                 <th class="datatable-nosort">Action</th>
               </tr>
@@ -62,10 +62,10 @@
               <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td class="table-plus">{{ publication.title }}</td>
-                <td>{{ publication.files }}</td>
+                <td>{{ publication.files.size|filesizeformat }}</td>
                 <td>{{ publication.publication_date }}</td>
                 <td>
-                  <a href="{% url 'adm_communeDetails' publication.id %}">
+                  <a href="{% url 'adm_publicationDetails' publication.id %}">
                     <i class="dw dw-eye"></i> View
                   </a>
                 </td>
@@ -125,7 +125,7 @@
                   type="file"
                   class="form-control"
                   placeholder="upload Documet"
-                  name="idd_file"
+                  name="publication_file"
                   accept=".pdf,.docx,.doc,.xls,.xlsx,.pptx,.ppt"
                   required
                 />

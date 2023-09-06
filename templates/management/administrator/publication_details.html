@@ -25,7 +25,7 @@
                 <a href="{% url 'adm_dashboard' %}">Dashboard</a>
               </li>
               <li class="breadcrumb-item">
-                <a href="{% url 'adm_communes' %}">Publication List</a>
+                <a href="{% url 'adm_publications' %}">Publication List</a>
               </li>
               <li class="breadcrumb-item active" aria-current="page">
                 Publication Details
@@ -39,6 +39,7 @@
     <div class="min-height-200px">
       <div class="card-box mb-30">
         <div class="pd-20">
+          <span class="float-right">Date: {{ publication.publication_date }}</span>
           <h4 class="h4">Publication Details</h4>
         </div>
         <div class="card-body pb-20">
@@ -53,14 +54,29 @@
             <div class="row">
               <div class="col-lg-12 mb-3">
                 <span class="font-weight-bold">Title:</span>
-                <h4 class="title">{{ commune.commune_name }}</h4>
+                <h4 class="title">{{ publication.title }}</h4>
               </div>
               <div class="col-lg-12 mb-3">
                 <span class="font-weight-bold">File:</span>
-                <h5 class="subtitle">{{ commune.province.province_name }}</h5>
+                <h6 class="subtitle">{{ publication.files }}
+                  <a class="text-info ml-5" href="{{ publication.files.url }}" download> 
+                    <i class="fa fa-download"></i>
+                     Dowload 
+                  </a>
+                </h6>
+              </div>
+              <div class="col-lg-12 mb-3">
+                <span class="font-weight-bold">Size File:</span>
+                <h6 class="subtitle">{{ publication.files.size|filesizeformat }}</h6>
               </div>
               <hr />
-              <form action="" method="post" class="col-lg-12 mb-3">
+              <form
+                action=""
+                method="post"
+                role="form"
+                enctype="multipart/form-data"
+                class="col-lg-12 mb-3"
+              >
                 {% csrf_token %}
                 <div class="modal-body">
                   <div class="form-group mb-0">
@@ -70,7 +86,7 @@
                       class="form-control"
                       name="title"
                       placeholder="Title ..."
-                      value="{{province.province_name}}"
+                      value="{{publication.title}}"
                       required
                     />
                   </div>
@@ -81,9 +97,8 @@
                       type="file"
                       class="form-control"
                       placeholder="upload Documet"
-                      name="idd_file"
+                      name="publication_file"
                       accept=".pdf,.docx,.doc,.xls,.xlsx,.pptx,.ppt"
-                      required
                     />
                   </div>
                 </div>
@@ -133,7 +148,7 @@
             <div class="modal-body">
               <h6 align="center">
                 Are you sure you want to delete <br />
-                commune "{{commune.commune_name}}" ?
+                Publication "{{publication.title}}" ?
               </h6>
             </div>
             <div class="modal-footer">
@@ -146,7 +161,7 @@
               </button>
               <button
                 type="submit"
-                name="delete_commune"
+                name="delete_publication"
                 class="btn btn-danger"
               >
                 Yes, Delete

@@ -181,7 +181,7 @@ def adm_profile(request):
 
 
 
-@login_required(login_url='registrar_login')
+@login_required(login_url='staff_login')
 def adm_services(request):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         if 'new_service' in request.POST:
@@ -227,7 +227,7 @@ def adm_services(request):
 
 
 
-@login_required(login_url='registrar_login')
+@login_required(login_url='staff_login')
 def adm_serviceDetails(request, pk):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         service_id = pk
@@ -289,7 +289,7 @@ def adm_serviceDetails(request, pk):
 
 
 
-@login_required(login_url='registrar_login')
+@login_required(login_url='staff_login')
 def adm_provinces(request):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         if 'new_province' in request.POST:
@@ -332,7 +332,7 @@ def adm_provinces(request):
 
 
 
-@login_required(login_url='registrar_login')
+@login_required(login_url='staff_login')
 def adm_provinceDetails(request, pk):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         province_id = pk
@@ -392,7 +392,7 @@ def adm_provinceDetails(request, pk):
 
 
 
-@login_required(login_url='registrar_login')
+@login_required(login_url='staff_login')
 def adm_communes(request):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         if 'new_commune' in request.POST:
@@ -440,7 +440,7 @@ def adm_communes(request):
 
 
 
-@login_required(login_url='registrar_login')
+@login_required(login_url='staff_login')
 def adm_communeDetails(request, pk):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         commune_id = pk
@@ -506,7 +506,7 @@ def adm_communeDetails(request, pk):
 
 
 
-@login_required(login_url='registrar_login')
+@login_required(login_url='staff_login')
 def adm_collines(request):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         if 'new_colline' in request.POST:
@@ -554,7 +554,7 @@ def adm_collines(request):
 
 
 
-@login_required(login_url='registrar_login')
+@login_required(login_url='staff_login')
 def adm_collineDetails(request, pk):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         colline_id = pk
@@ -620,7 +620,7 @@ def adm_collineDetails(request, pk):
 
 
 
-@login_required(login_url='registrar_login')
+@login_required(login_url='staff_login')
 def adm_communeChiefs(request):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         if 'new_chief' in request.POST:
@@ -680,7 +680,7 @@ def adm_communeChiefs(request):
 
 
 
-@login_required(login_url='registrar_login')
+@login_required(login_url='staff_login')
 def adm_communeChiefDetails(request, pk):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         chief_id = pk
@@ -751,6 +751,112 @@ def adm_communeChiefDetails(request, pk):
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(staffLogin)
 
+
+
+
+@login_required(login_url='staff_login')
+def adm_publications(request):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        if 'new_publication' in request.POST:
+            title = request.POST.get("title")
+            publication_file = request.FILES["publication_file"]
+
+            if title and publication_file:
+                found_data = Publication.objects.filter(title=title)
+                if found_data:
+                    messages.warning(request, "The Publication with title "+title+", Already exist.")
+                    return redirect(adm_publications)
+                else:
+                    # add new publication
+                    addPubication = Publication(
+                        recorded_by=request.user,
+                        title=title,
+                        files=publication_file,
+                    )
+                    addPubication.save()
+
+                    messages.success(
+                        request, "New Publication created successfully.")
+                    return redirect(adm_publications)
+            else:
+                messages.error(request, "Error , All fields are required!")
+                return redirect(adm_publications)
+        else:
+            # request_data = Application.objects.filter(status="Waiting")
+            # getting publications
+            PublicationData = Publication.objects.filter().order_by('publication_date')
+            context = {
+                'title': 'National Administrator - Publications List',
+                'publication_active': 'active',
+                'publications': PublicationData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'management/administrator/publication_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def adm_publicationDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        publication_id = pk
+        # getting publication
+        if Publication.objects.filter(id=publication_id).exists():
+            # if exists
+            foundData = Publication.objects.get(id=publication_id)
+
+            if 'update_publication' in request.POST:
+                # Retrieve the form data from the request
+                title = request.POST.get("title")
+
+                if title:
+                    if Publication.objects.filter(title=title).exclude(id=publication_id):
+                        messages.warning(
+                            request, "Publication with title "+title+", already exist.")
+                        return redirect(adm_publicationDetails, pk)
+                    else:
+                        # Update publication
+                        if 'publication_file' in request.FILES:
+                            publication_file = request.FILES["publication_file"]
+                            publication_updated = foundData
+                            publication_updated.title=title
+                            publication_updated.files=publication_file
+                        else:
+                            publication_updated = foundData
+                            publication_updated.title=title
+                        
+                        publication_updated.save()
+                        messages.success(request, "Publication Updated successfully.")
+                        return redirect(adm_publicationDetails, pk)
+                else:
+                    messages.error(request, ('Publication title is required.'))
+                    return redirect(adm_publicationDetails, pk)
+
+            elif 'delete_publication' in request.POST:
+                # Delete publication
+                delete_publication = Publication.objects.get(id=publication_id)
+                delete_publication.delete()
+                messages.success(request, "Publication info deleted successfully.")
+                return redirect(adm_publications)
+
+            else:
+                # request_data = Application.objects.filter(status="Waiting")
+                
+                context = {
+                    'title': 'National Administrator - Publication Info',
+                    'publication_active': 'active',
+                    'publication': foundData,
+                    # 'request_data': request_data,
+                }
+                return render(request, 'management/administrator/publication_details.html', context)
+        else:
+            messages.error(request, ('Commune not found'))
+            return redirect(adm_publications)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
 
 
 
