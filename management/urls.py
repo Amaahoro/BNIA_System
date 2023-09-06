@@ -24,4 +24,6 @@ urlpatterns = [
     path('bnia/administrator/territorial/communes/<int:pk>/commune_details/', views.adm_communeDetails, name='adm_communeDetails'),
     path('bnia/administrator/territorial/collines/', views.adm_collines, name='adm_collines'),
     path('bnia/administrator/territorial/collines/<int:pk>/colline_details/', views.adm_collineDetails, name='adm_collineDetails'),
+    path('bnia/administrator/commune_chiefs/', views.adm_communeChiefs, name='adm_communeChiefs'),
+    path('bnia/administrator/commune_chiefs/<int:pk>/chief_details/', views.adm_communeChiefDetails, name='adm_communeChiefDetails'),
 ]

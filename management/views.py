@@ -558,7 +558,7 @@ def adm_collines(request):
 def adm_collineDetails(request, pk):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         colline_id = pk
-        # getting commune
+        # getting colline
         if Colline.objects.filter(id=colline_id).exists():
             # if exists
             foundData = Colline.objects.get(id=colline_id)
@@ -613,6 +613,140 @@ def adm_collineDetails(request, pk):
         else:
             messages.error(request, ('Colline not found'))
             return redirect(adm_collines)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+
+@login_required(login_url='registrar_login')
+def adm_communeChiefs(request):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        if 'new_chief' in request.POST:
+            # Retrieve the form data from the request
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+            gender = request.POST.get('gender')
+            phone = request.POST.get('phone')
+            commune_id = request.POST.get('commune')
+
+            if first_name and last_name and email and gender and commune_id:
+                if get_user_model().objects.filter(email=email):
+                    messages.warning(request, "Email already exist.")
+                    return redirect(adm_communeChiefs)
+                elif get_user_model().objects.filter(commune=commune_id):
+                    messages.warning(request, "Commune already assigned to a chief.")
+                    return redirect(adm_communeChiefs)
+                else:
+                    # Create new User as chief_commune
+                    user =  get_user_model().objects.create_user(
+                        first_name=first_name,
+                        last_name=last_name,
+                        email=email,
+                        password='user12345',
+                        gender=gender,
+                        is_chief_commune=True,
+                        commune=Commune.objects.get(id=commune_id),
+                        phone=phone,
+                    )
+                    if user:
+                        messages.success(request, "Chief "+first_name+" "+last_name+", created successfully.")
+                        return redirect(adm_communeChiefs)
+                    else:
+                        messages.error(request, ('Process Failed.'))
+                        return redirect(adm_communeChiefs)
+            else:
+                messages.error(request, "Error , All fields are required!")
+                return redirect(adm_communeChiefs)
+        else:
+            # request_data = Application.objects.filter(status="Waiting")
+            # getting commune
+            CommuneData = Commune.objects.filter().order_by('commune_name')
+            # getting chiefs
+            ChiefData = get_user_model().objects.filter(is_chief_commune=True).order_by('commune')
+            context = {
+                'title': 'National Administrator - Commune Chiefs List',
+                'chief_active': 'active',
+                'chiefs': ChiefData,
+                'communes': CommuneData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'management/administrator/chiefCommune_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='registrar_login')
+def adm_communeChiefDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        chief_id = pk
+        # getting chief
+        if get_user_model().objects.filter(is_chief_commune=True, id=chief_id).exists():
+            # if exists
+            foundData = get_user_model().objects.get(id=chief_id)
+
+            if 'update_chief' in request.POST:
+                # Retrieve the form data from the request
+                first_name = request.POST.get('first_name')
+                last_name = request.POST.get('last_name')
+                email = request.POST.get('email')
+                gender = request.POST.get('gender')
+                phone = request.POST.get('phone')
+                commune_id = request.POST.get('commune')
+                # profilePicture = request.FILES.get('profilePicture')
+
+                if first_name and last_name and email and gender and commune_id:
+                    if get_user_model().objects.filter(email=email).exclude(id=chief_id):
+                        messages.warning(request, "Email already exist.")
+                        return redirect(adm_communeChiefs)
+                    elif get_user_model().objects.filter(commune=commune_id).exclude(id=chief_id):
+                        messages.warning(request, "Commune already assigned to a chief.")
+                        return redirect(adm_communeChiefs)
+                    else:
+                        # Update Chief
+                        chiefDetails = foundData
+                        chiefDetails.first_name = first_name
+                        chiefDetails.last_name = last_name
+                        chiefDetails.email = email
+                        chiefDetails.gender = gender
+                        chiefDetails.commune = Commune.objects.get(id=commune_id)
+                        chiefDetails.phone = phone
+                        chiefDetails.save()
+                        
+                        messages.success(
+                        request, "Chief "+first_name+" "+last_name+", Updated successfully.")
+                        return redirect(adm_communeChiefDetails, pk)
+                else:
+                    messages.error(request, ('Error , All fields are required!'))
+                    return redirect(adm_communeChiefDetails, pk)
+
+            elif 'delete_chief' in request.POST:
+                # Delete chief
+                delete_chief = get_user_model().objects.get(is_chief_commune=True,id=chief_id)
+                delete_chief.delete()
+                messages.success(request, "Chief Commune info deleted successfully.")
+                return redirect(adm_communeChiefs)
+
+            else:
+                # request_data = Application.objects.filter(status="Waiting")
+                
+                # getting commune
+                communeData = Commune.objects.filter().order_by('commune_name')
+                context = {
+                    'title': 'National Administrator - Chief Commune Info',
+                    'chief_active': 'active',
+                    'chief': foundData,
+                    'communes': communeData,
+                    # 'request_data': request_data,
+                }
+                return render(request, 'management/administrator/chiefCommune_details.html', context)
+        else:
+            messages.error(request, ('Chief not found'))
+            return redirect(adm_communeChiefs)
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(staffLogin)

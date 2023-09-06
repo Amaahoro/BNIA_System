@@ -1,0 +1,157 @@
+{% extends "management/administrator/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Publication List</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>Publication List</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'adm_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Publication List
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">Publication List</h4>
+        </div>
+        <div class="card-body pb-20">
+          <button
+            type="button"
+            class="btn btn-info float-right"
+            data-toggle="modal"
+            data-target="#serviceModal"
+          >
+            <i class="fa fa-plus"></i>
+            New Publication
+          </button>
+          <table class="data-table table stripe hover nowrap">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th class="table-plus datatable-nosort">Publication Title</th>
+                <th>Attachment</th>
+                <th>Date</th>
+                <th class="datatable-nosort">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for publication in publications %}
+              <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td class="table-plus">{{ publication.title }}</td>
+                <td>{{ publication.files }}</td>
+                <td>{{ publication.publication_date }}</td>
+                <td>
+                  <a href="{% url 'adm_communeDetails' publication.id %}">
+                    <i class="dw dw-eye"></i> View
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="serviceModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="serviceModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="serviceModalTitle">
+              REGISTER NEW PUBLICATION
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form
+            action=""
+            method="post"
+            role="form"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="form-group mb-0">
+                <label class="col-form-label">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="title"
+                  placeholder="Title ..."
+                  required
+                />
+              </div>
+              <div class="form-group mb-0">
+                <label class="col-form-label">File</label>
+                <input
+                  id="idd_file"
+                  type="file"
+                  class="form-control"
+                  placeholder="upload Documet"
+                  name="idd_file"
+                  accept=".pdf,.docx,.doc,.xls,.xlsx,.pptx,.ppt"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="new_publication"
+                class="btn btn-success"
+              >
+                <i class="fa fa-save"></i>
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

@@ -7,7 +7,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Commune Details</title>
+    <title>Commune Chief Details</title>
   </head>
 
   <body>
@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col-md-6 col-sm-12">
           <div class="title">
-            <h4>Commune Details</h4>
+            <h4>Commune Chief Details</h4>
           </div>
           <nav aria-label="breadcrumb" role="navigation">
             <ol class="breadcrumb">
@@ -25,10 +25,10 @@
                 <a href="{% url 'adm_dashboard' %}">Dashboard</a>
               </li>
               <li class="breadcrumb-item">
-                <a href="{% url 'adm_communes' %}">Commune List</a>
+                <a href="{% url 'adm_communeChiefs' %}">Commune Chiefs List</a>
               </li>
               <li class="breadcrumb-item active" aria-current="page">
-                Commune Details
+                Chief Details
               </li>
             </ol>
           </nav>
@@ -39,7 +39,7 @@
     <div class="min-height-200px">
       <div class="card-box mb-30">
         <div class="pd-20">
-          <h4 class="h4">Commune Details</h4>
+          <h4 class="h4">Commune Chief Details</h4>
         </div>
         <div class="card-body pb-20">
             <button
@@ -50,61 +50,191 @@
             >
               <i class="fa fa-trash text-danger"></i> Delete
             </button>
+            <button
+              type="button"
+              class="btn btn-light btn-rounded float-right mr-1"
+              data-toggle="modal"
+              data-target="#updateChiefModal"
+            >
+              <i class="fa fa-edit text-primary"></i> Edit
+            </button>
             <div class="row">
-              <div class="col-lg-12 mb-3">
-                <span class="font-weight-bold">Commune Name:</span>
-                <h4 class="title">{{ commune.commune_name }}</h4>
-              </div>
-              <div class="col-lg-12 mb-3">
-                <span class="font-weight-bold">Province:</span>
-                <h5 class="subtitle">{{ commune.province.province_name }}</h5>
-              </div>
-              <hr />
-              <form action="" method="post" class="col-lg-12 mb-3">
-                {% csrf_token %}
-                <div class="modal-body">
-                  <div class="form-group mb-0">
-                    <label class="col-form-label">Province</label>
-                    <select
-                      id="inputStatus"
-                      name="province"
-                      class="form-control custom-select"
-                      required
-                    >
-                      <option disabled>Select Province</option>
-                      {% if provinces %}{% for province in provinces %}
-                      <option value="{{province.id}}" {% if province.province_name == commune.province.province_name %} selected {% endif %} >
-                        {{province.province_name}}
-                      </option>
-                      {% endfor %}{% endif %}
-                    </select>
-                  </div>
-                  <div class="form-group mb-0">
-                    <label class="col-form-label">Commune Name</label>
+                <div class="col-sm-12 col-xl-6 mb-1">
+                  {% if chief.profilePicture %}
+                  <img
+                    class="profile-user-img img-responsive img-circle"
+                    src="{{chief.profilePicture.url}}"
+                    width="140px"
+                    alt="{{chief.first_name}} image"
+                  />
+                  {% else %}
+                  <img
+                    class="profile-user-img img-responsive img-circle"
+                    src="{% static 'staff/vendors/images/anonymous.png' %}"
+                    width="140px"
+                    alt="{{chief.first_name}} image"
+                  />
+                  {% endif%}
+                </div>
+                <div class="col-lg-12 mb-4">
+                  <span class="">
+                    Full names:
+                    <h4 class="title">
+                      {{ chief.first_name }} {{ chief.last_name }}
+                    </h4>
+                  </span>
+                </div>
+                <div class="col-sm-12 col-xl-6 mb-1">
+                  <p>Email: <span class="h5">{{ chief.email }}</span></p>
+                </div>
+                <div class="col-sm-12 col-xl-6 mb-1">
+                  <p>Phone: <span class="h5">{{ chief.phone }}</span></p>
+                </div>
+                <div class="col-sm-12 col-xl-6 mb-1">
+                  <p>Gender: <span class="h5">{{ chief.gender }}</span></p>
+                </div>
+                <div class="col-sm-12 col-xl-12 mb-1">
+                  <p>Commune in Charge: <span class="h5">{{ chief.commune.commune_name }}</span></p>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div
+      class="modal fade"
+      id="updateChiefModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="updateChiefModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateCitizenModalTitle">
+              <i class="fa fa-edit text-primary"></i> EDIT CHIEF INFORMATION
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="first_name">First Name</label>
                     <input
                       type="text"
                       class="form-control"
-                      name="commune_name"
-                      placeholder="Commune ..."
-                      value="{{ commune.commune_name }}"
+                      name="first_name"
+                      id="first_name"
+                      placeholder="First Name ..."
+                      value="{{chief.first_name}}"
                       required
                     />
                   </div>
                 </div>
-                <div class="modal-footer">
-                  <button
-                    type="submit"
-                    name="update_commune"
-                    class="btn btn-success"
-                  >
-                    <i class="fa fa-save"></i>
-                    Save Changes
-                  </button>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="last_name"
+                      id="last_name"
+                      placeholder="Last Name ..."
+                      value="{{chief.last_name}}"
+                      required
+                    />
+                  </div>
                 </div>
-              </form>
-              
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  id="email"
+                  placeholder="Email ..."
+                  value="{{chief.email}}"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone (include country code)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="phone"
+                  id="phone"
+                  placeholder="Phone ..."
+                  value="{{chief.phone}}"
+                />
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select
+                      class="form-control"
+                      name="gender"
+                      id="gender"
+                      required
+                    >
+                      <option value="" class="bg-light">Select Gender</option>
+                      <option {% if chief.gender == 'Male' %} selected {% endif %} value="Male">Male</option>
+                      <option {% if chief.gender == 'Female' %} selected {% endif %} value="Female">Female</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="commune">Commune in Charge</label>
+                <select
+                  class="form-control"
+                  name="commune"
+                  id="commune"
+                  required
+                >
+                  <option value="" class="bg-light">Select Commune in Charge</option>
+                  {% if communes %}{% for commune in communes %}
+                  <option value="{{commune.id}}" {% if commune.commune_name == chief.commune.commune_name %} selected {% endif %} >
+                    {{commune.commune_name}}
+                  </option>
+                  {% endfor %}{% endif %}
+                </select>
+              </div>
             </div>
-          </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="update_chief"
+                class="btn btn-success"
+              >
+                <i class="fa fa-save"></i>
+                Save Changes
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -121,7 +251,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="deleteModalTitle">
-              <i class="fa fa-trash text-danger"></i> DELETE COMMUNE
+              <i class="fa fa-trash text-danger"></i> DELETE COMMUNE CHIEF
             </h5>
             <button
               type="button"
@@ -137,7 +267,7 @@
             <div class="modal-body">
               <h6 align="center">
                 Are you sure you want to delete <br />
-                commune "{{commune.commune_name}}" ?
+                chief "{{ chief.first_name }} {{ chief.last_name }}" of commune "{{ chief.commune.commune_name }}" ?
               </h6>
             </div>
             <div class="modal-footer">
@@ -150,7 +280,7 @@
               </button>
               <button
                 type="submit"
-                name="delete_commune"
+                name="delete_chief"
                 class="btn btn-danger"
               >
                 Yes, Delete
