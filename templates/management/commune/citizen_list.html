@@ -1,0 +1,287 @@
+{% extends "management/commune/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Citizens List</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>Citizens List</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'adm_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Citizens List
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">Citizens List</h4>
+          <button
+            type="button"
+            class="btn btn-info float-right"
+            data-toggle="modal"
+            data-target="#registerModal"
+          >
+            <i class="fa fa-user-plus"></i>
+            New Citizen
+          </button>
+        </div>
+        <div class="card-body pb-20">
+          <table class="table data-table-export hover nowrap">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th class="table-plus datatable-nosort">Citizen Name</th>
+                <th>Gender</th>
+                <th>Birth Date</th>
+                <th>Birth Place</th>
+                <th>Volume No.</th>
+                <th>Registered Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for citizen in citizens %}
+              <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td class="table-plus">
+                  <a
+                    class="text-info"
+                    href="{% url 'chief_citizenDetails' citizen.id %}"
+                  >
+                    <i class="fa fa-user"></i>
+                    {{citizen.first_name}} {{citizen.last_name}}
+                  </a>
+                </td>
+                <td>{{citizen.gender}}</td>
+                <td>{{citizen.birthdate}}</td>
+                <td>{{citizen.birth_place}}</td>
+                <td>#{{citizen.volume_number}}</td>
+                <td>{{citizen.createdDate}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="registerModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="registerModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="registerModalTitle">
+              REGISTER NEW CITIZEN
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <fieldset class="mb-2">
+                <legend><h6>Citizen Info</h6></legend>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="first_name">First Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="first_name"
+                        id="first_name"
+                        placeholder="First Name ..."
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="last_name">Last Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="last_name"
+                        id="last_name"
+                        placeholder="Last Name ..."
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="gender">Gender</label>
+                  <select
+                    class="form-control"
+                    name="gender"
+                    id="gender"
+                    required
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="birthdate">Birthdate</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="birthdate"
+                    id="birthdate"
+                  />
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="birth_place">Birth Place</label>
+                      <select
+                        class="form-control"
+                        name="birth_place"
+                        id="birth_place"
+                        required
+                      >
+                        <option value="">Select Birth Place</option>
+                        {% for colline in collines %}
+                        <option value="{{colline.id}}">
+                          {{colline.colline_name}}
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="volume_no">Volume No.</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="volume_no"
+                        id="volume_no"
+                        placeholder="Volume No. ..."
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+              <br />
+              <fieldset class="mb-2">
+                <legend><h6>Citizen Parents</h6></legend>
+                <div class="row">
+                  <div class="col-12">
+                    <h6>Father</h6>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="father_fname">First Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="father_fname"
+                        id="father_fname"
+                        placeholder="First Name ..."
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="father_lname">Last Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="father_lname"
+                        id="father_lname"
+                        placeholder="Last Name ..."
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <h6>Mother</h6>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="mother_fname">First Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="mother_fname"
+                        id="mother_fname"
+                        placeholder="First Name ..."
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="mother_lname">Last Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="mother_lname"
+                        id="mother_lname"
+                        placeholder="Last Name ..."
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" name="new_citizen" class="btn btn-success">
+                <i class="fa fa-save"></i>
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

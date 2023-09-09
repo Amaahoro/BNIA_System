@@ -1,6 +1,6 @@
 {% load static %}
 
-<div class="left-side-bar">
+<div class="left-side-bar bg-success">
   <div class="brand-logo">
     <a href="{% url 'chief_dashboard' %}">
       <img
@@ -51,7 +51,7 @@
           <div class="sidebar-small-cap">Citizenship</div>
         </li>
         <li class="dropdown">
-          <a href="" class="dropdown-toggle no-arrow">
+          <a href="{% url 'chief_citizens' %}" class="dropdown-toggle no-arrow">
             <span class="micon dw dw-list"></span
             ><span class="mtext">Citizens</span>
           </a>

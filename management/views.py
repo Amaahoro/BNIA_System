@@ -702,10 +702,10 @@ def adm_communeChiefDetails(request, pk):
                 if first_name and last_name and email and gender and commune_id:
                     if get_user_model().objects.filter(email=email).exclude(id=chief_id):
                         messages.warning(request, "Email already exist.")
-                        return redirect(adm_communeChiefs)
+                        return redirect(adm_communeChiefDetails, pk)
                     elif get_user_model().objects.filter(commune=commune_id).exclude(id=chief_id):
                         messages.warning(request, "Commune already assigned to a chief.")
-                        return redirect(adm_communeChiefs)
+                        return redirect(adm_communeChiefDetails, pk)
                     else:
                         # Update Chief
                         chiefDetails = foundData
@@ -861,6 +861,170 @@ def adm_publicationDetails(request, pk):
 
 
 
+@login_required(login_url='staff_login')
+def adm_citizens(request):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        if 'new_citizen' in request.POST:
+            # Retrieve the form data from the request
+            first_name=request.POST.get('first_name')
+            last_name=request.POST.get('last_name')
+            gender=request.POST.get('gender')
+            birthdate=request.POST.get('birthdate')
+            birth_place=request.POST.get('birth_place')
+            volume_no=request.POST.get('volume_no')
+            father_fname=request.POST.get('father_fname')
+            father_lname=request.POST.get('father_lname')
+            mother_fname=request.POST.get('mother_fname')
+            mother_lname=request.POST.get('mother_lname')
+
+            if first_name and last_name and gender and birthdate and birth_place and volume_no and father_fname and father_lname and mother_fname and mother_lname:
+                if Citizen.objects.filter(volume_number=volume_no):
+                    messages.warning(request, "Citizen with volume number "+volume_no+", already exist.")
+                    return redirect(adm_citizens)
+                else:
+                    # add new citizen
+                    newCitizen = Citizen.objects.create(
+                        first_name=first_name,
+                        last_name=last_name,
+                        gender=gender,
+                        birthdate=birthdate,
+                        birth_place=Colline.objects.get(id=birth_place),
+                        volume_number=volume_no,
+                    )
+                    if newCitizen:
+                        # Create parent records if provided
+                        if father_fname and father_lname:
+                            CitizenParent.objects.create(
+                                citizen=newCitizen,
+                                parent=CitizenParent.Parent.FATHER,
+                                first_name=father_fname,
+                                last_name=father_lname
+                            )
+
+                        if mother_fname and mother_lname:
+                            CitizenParent.objects.create(
+                                citizen=newCitizen,
+                                parent=CitizenParent.Parent.MOTHER,
+                                first_name=mother_fname,
+                                last_name=mother_lname
+                            )
+                        messages.success(request, "Citizen "+first_name+" "+last_name+", registered successfully.")
+                        return redirect(adm_citizens)
+                    else:
+                        messages.error(request, ('Process Failed.'))
+                        return redirect(adm_citizens)
+            else:
+                messages.error(request, "Error , All fields are required!")
+                return redirect(adm_citizens)
+        else:
+            # getting colline
+            CollineData = Colline.objects.filter().order_by('colline_name')
+            # getting citizen
+            citizensData = Citizen.objects.filter().order_by('birth_place', 'createdDate')
+            context = {
+                'title': 'National Administrator - Citizens List',
+                'citizens_active': 'active',
+                'citizens': citizensData,
+                'collines': CollineData,
+            }
+            return render(request, 'management/administrator/citizen_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def adm_citizenDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        citizen_id = pk
+        # getting citizen
+        if Citizen.objects.filter(id=citizen_id).exists():
+            # if exists
+            foundData = Citizen.objects.get(id=citizen_id)
+
+            if 'update_citizen' in request.POST:
+                # Retrieve the form data from the request
+                first_name=request.POST.get('first_name')
+                last_name=request.POST.get('last_name')
+                gender=request.POST.get('gender')
+                birthdate=request.POST.get('birthdate')
+                birth_place=request.POST.get('birth_place')
+                volume_no=request.POST.get('volume_no')
+
+
+                if first_name and last_name and gender and birthdate and birth_place and volume_no:
+                    if Citizen.objects.filter(volume_number=volume_no).exclude(id=citizen_id):
+                        messages.warning(request, "Volume number "+volume_no+", already taken.")
+                        return redirect(adm_citizenDetails, pk)
+                    else:
+                        # Update citizen
+                        citizenDetails = foundData
+                        citizenDetails.first_name=first_name
+                        citizenDetails.last_name=last_name
+                        citizenDetails.gender=gender
+                        citizenDetails.birthdate=birthdate
+                        citizenDetails.birth_place=Colline.objects.get(id=birth_place)
+                        citizenDetails.volume_number=volume_no
+                        citizenDetails.save()
+                        
+                        messages.success(
+                        request, "Citizen "+first_name+" "+last_name+", Updated successfully.")
+                        return redirect(adm_citizenDetails, pk)
+                else:
+                    messages.error(request, ('Error , All fields are required!'))
+                    return redirect(adm_citizenDetails, pk)
+            
+            if 'update_parents' in request.POST:
+                # Retrieve the form data from the request
+                father_fname=request.POST.get('father_fname')
+                father_lname=request.POST.get('father_lname')
+                mother_fname=request.POST.get('mother_fname')
+                mother_lname=request.POST.get('mother_lname')
+
+                if father_fname and father_lname and mother_fname and mother_lname:
+                    # Update or create parent records if provided
+                    father = CitizenParent.objects.filter(citizen=foundData, parent=CitizenParent.Parent.FATHER).first()
+                    if father:
+                        father.first_name = father_fname
+                        father.last_name = father_lname
+                        father.save()
+
+                    mother = CitizenParent.objects.filter(citizen=foundData, parent=CitizenParent.Parent.MOTHER).first()
+                    if mother:
+                        mother.first_name = mother_fname
+                        mother.last_name = mother_lname
+                        mother.save()
+                        
+                    messages.success(request, "Citizen parents Info Updated successfully.")
+                    return redirect(adm_citizenDetails, pk)
+                else:
+                    messages.error(request, ('Error , All fields are required!'))
+                    return redirect(adm_citizenDetails, pk)
+
+            elif 'delete_citizen' in request.POST:
+                # Delete citizen
+                delete_chief = foundData
+                delete_chief.delete()
+                messages.success(request, "Citizen info deleted successfully.")
+                return redirect(adm_citizens)
+
+            else:
+                # getting colline
+                CollineData = Colline.objects.filter().order_by('colline_name')
+                context = {
+                    'title': 'National Administrator - Citizen Info',
+                    'citizens_active': 'active',
+                    'citizen': foundData,
+                    'collines': CollineData,
+                }
+                return render(request, 'management/administrator/citizen_details.html', context)
+        else:
+            messages.error(request, ('Citizen not found'))
+            return redirect(adm_citizens)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
 
 
 # ==========================================================
@@ -1008,13 +1172,10 @@ def chief_publicationDetails(request, pk):
         if Publication.objects.filter(id=publication_id).exists():
             # if exists
             foundData = Publication.objects.get(id=publication_id)
-
-            # request_data = Application.objects.filter(status="Waiting")
             context = {
                 'title': 'Chief Commune - Publication Info',
                 'publication_active': 'active',
                 'publication': foundData,
-                # 'request_data': request_data,
             }
             return render(request, 'management/commune/publication_details.html', context)
         else:
@@ -1023,5 +1184,174 @@ def chief_publicationDetails(request, pk):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(staffLogin)
+
+
+
+
+@login_required(login_url='staff_login')
+def chief_citizens(request):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        if 'new_citizen' in request.POST:
+            # Retrieve the form data from the request
+            first_name=request.POST.get('first_name')
+            last_name=request.POST.get('last_name')
+            gender=request.POST.get('gender')
+            birthdate=request.POST.get('birthdate')
+            birth_place=request.POST.get('birth_place')
+            volume_no=request.POST.get('volume_no')
+            father_fname=request.POST.get('father_fname')
+            father_lname=request.POST.get('father_lname')
+            mother_fname=request.POST.get('mother_fname')
+            mother_lname=request.POST.get('mother_lname')
+
+            if first_name and last_name and gender and birthdate and birth_place and volume_no and father_fname and father_lname and mother_fname and mother_lname:
+                if Citizen.objects.filter(volume_number=volume_no):
+                    messages.warning(request, "Citizen with volume number "+volume_no+", already exist.")
+                    return redirect(chief_citizens)
+                else:
+                    # add new citizen
+                    newCitizen = Citizen.objects.create(
+                        first_name=first_name,
+                        last_name=last_name,
+                        gender=gender,
+                        birthdate=birthdate,
+                        birth_place=Colline.objects.get(id=birth_place),
+                        volume_number=volume_no,
+                    )
+                    if newCitizen:
+                        # Create parent records if provided
+                        if father_fname and father_lname:
+                            CitizenParent.objects.create(
+                                citizen=newCitizen,
+                                parent=CitizenParent.Parent.FATHER,
+                                first_name=father_fname,
+                                last_name=father_lname
+                            )
+
+                        if mother_fname and mother_lname:
+                            CitizenParent.objects.create(
+                                citizen=newCitizen,
+                                parent=CitizenParent.Parent.MOTHER,
+                                first_name=mother_fname,
+                                last_name=mother_lname
+                            )
+                        messages.success(request, "Citizen "+first_name+" "+last_name+", registered successfully.")
+                        return redirect(chief_citizens)
+                    else:
+                        messages.error(request, ('Process Failed.'))
+                        return redirect(chief_citizens)
+            else:
+                messages.error(request, "Error , All fields are required!")
+                return redirect(chief_citizens)
+        else:
+            # getting colline
+            CollineData = Colline.objects.filter(commune=request.user.commune).order_by('colline_name')
+            # getting citizen
+            citizensData = Citizen.objects.filter(birth_place__commune=request.user.commune).order_by('birth_place', 'createdDate')
+            context = {
+                'title': 'Chief Commune - Citizens List',
+                'citizens_active': 'active',
+                'citizens': citizensData,
+                'collines': CollineData,
+            }
+            return render(request, 'management/commune/citizen_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def chief_citizenDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        citizen_id = pk
+        # getting citizen
+        if Citizen.objects.filter(birth_place__commune=request.user.commune, id=citizen_id).exists():
+            # if exists
+            foundData = Citizen.objects.get(birth_place__commune=request.user.commune, id=citizen_id)
+
+            if 'update_citizen' in request.POST:
+                # Retrieve the form data from the request
+                first_name=request.POST.get('first_name')
+                last_name=request.POST.get('last_name')
+                gender=request.POST.get('gender')
+                birthdate=request.POST.get('birthdate')
+                birth_place=request.POST.get('birth_place')
+                volume_no=request.POST.get('volume_no')
+
+
+                if first_name and last_name and gender and birthdate and birth_place and volume_no:
+                    if Citizen.objects.filter(volume_number=volume_no).exclude(id=citizen_id):
+                        messages.warning(request, "Volume number "+volume_no+", already taken.")
+                        return redirect(chief_citizenDetails, pk)
+                    else:
+                        # Update citizen
+                        citizenDetails = foundData
+                        citizenDetails.first_name=first_name
+                        citizenDetails.last_name=last_name
+                        citizenDetails.gender=gender
+                        citizenDetails.birthdate=birthdate
+                        citizenDetails.birth_place=Colline.objects.get(id=birth_place)
+                        citizenDetails.volume_number=volume_no
+                        citizenDetails.save()
+                        
+                        messages.success(
+                        request, "Citizen "+first_name+" "+last_name+", Updated successfully.")
+                        return redirect(chief_citizenDetails, pk)
+                else:
+                    messages.error(request, ('Error , All fields are required!'))
+                    return redirect(chief_citizenDetails, pk)
+            
+            if 'update_parents' in request.POST:
+                # Retrieve the form data from the request
+                father_fname=request.POST.get('father_fname')
+                father_lname=request.POST.get('father_lname')
+                mother_fname=request.POST.get('mother_fname')
+                mother_lname=request.POST.get('mother_lname')
+
+                if father_fname and father_lname and mother_fname and mother_lname:
+                    # Update or create parent records if provided
+                    father = CitizenParent.objects.filter(citizen=foundData, parent=CitizenParent.Parent.FATHER).first()
+                    if father:
+                        father.first_name = father_fname
+                        father.last_name = father_lname
+                        father.save()
+
+                    mother = CitizenParent.objects.filter(citizen=foundData, parent=CitizenParent.Parent.MOTHER).first()
+                    if mother:
+                        mother.first_name = mother_fname
+                        mother.last_name = mother_lname
+                        mother.save()
+                        
+                    messages.success(request, "Citizen parents Info Updated successfully.")
+                    return redirect(chief_citizenDetails, pk)
+                else:
+                    messages.error(request, ('Error , All fields are required!'))
+                    return redirect(chief_citizenDetails, pk)
+
+            elif 'delete_citizen' in request.POST:
+                # Delete citizen
+                delete_chief = foundData
+                delete_chief.delete()
+                messages.success(request, "Citizen info deleted successfully.")
+                return redirect(chief_citizens)
+
+            else:
+                # getting colline
+                CollineData = Colline.objects.filter(commune=request.user.commune).order_by('colline_name')
+                context = {
+                    'title': 'Chief Commune - Citizen Info',
+                    'citizens_active': 'active',
+                    'citizen': foundData,
+                    'collines': CollineData,
+                }
+                return render(request, 'management/commune/citizen_details.html', context)
+        else:
+            messages.error(request, ('Citizen not found'))
+            return redirect(chief_citizens)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
 
 

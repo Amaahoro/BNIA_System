@@ -1,0 +1,447 @@
+{% extends "management/commune/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Citizen Details</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>Citizen Details</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_citizens' %}">Citizens List</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Citizen Details
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+    
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">Citizen Details</h4>
+        </div>
+        <div class="card-body pb-20">
+          <div class="row px-4">
+            <div class="col-12 mb-1">
+              <button
+                type="button"
+                class="btn btn-light btn-rounded float-right"
+                data-toggle="modal"
+                data-target="#delete_confirmation"
+              >
+                <i class="fa fa-trash text-danger"></i> Delete
+              </button>
+              <button
+                type="button"
+                class="btn btn-light btn-rounded float-right mr-1"
+                data-toggle="modal"
+                data-target="#updateCitizenModal"
+              >
+                <i class="fa fa-edit text-primary"></i> Edit
+              </button>
+              <img
+                class="profile-user-img img-responsive img-circle"
+                src="{% static 'staff/vendors/images/anonymous.png' %}"
+                width="140px"
+                alt="{{citizen.first_name}} image"
+              />
+            </div>
+            <div class="col-lg-12 mb-4">
+              <span class="">
+                Full names:
+                <h4 class="title">
+                  {{ citizen.first_name }} {{ citizen.last_name }}
+                </h4>
+              </span>
+            </div>
+            <div class="col-sm-12 col-xl-12 mb-1">
+              <p>Gender: <span class="h5">{{ citizen.gender }}</span></p>
+            </div>
+            <div class="col-sm-12 col-xl-12 mb-1">
+              <p>Birth Date: <span class="h5">{{citizen.birthdate}}</span></p>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-1">
+              <p>Birth Place: <span class="h5">{{citizen.birth_place}}</span></p>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-1">
+              <p>Volume No.: <span class="h5">#{{citizen.volume_number}}</span></p>
+            </div>
+            <div class="col-lg-12 my-4">
+              <button
+                type="button"
+                class="btn btn-light btn-rounded float-right mr-1"
+                data-toggle="modal"
+                data-target="#updateParentModal"
+              >
+                <i class="fa fa-edit text-primary"></i> Edit
+              </button>
+              <h6 class=""> Citizen Parents </h6>
+              <hr />
+              {% for parent in citizen.parents.all %}
+              <p class="h6 mb-1">{{ parent.parent }}</p>
+              <div class="row">
+                <div class="col-sm-12 col-xl-6 mb-1">
+                  <p>First Name: <span class="h5">{{ parent.first_name }}</span></p>
+                </div>
+                <div class="col-sm-12 col-xl-6 mb-1">
+                  <p>Last Name: <span class="h5">{{ parent.last_name }}</span></p>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <div
+      class="modal fade"
+      id="updateCitizenModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="updateCitizenModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateCitizenModalTitle">
+              EDIT CITIZEN INFO
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <fieldset class="mb-2">
+                <legend><h6>Citizen Info</h6></legend>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="first_name">First Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="first_name"
+                        id="first_name"
+                        placeholder="First Name ..."
+                        value="{{citizen.first_name}}"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="last_name">Last Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="last_name"
+                        id="last_name"
+                        placeholder="Last Name ..."
+                        value="{{citizen.last_name}}"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="gender">Gender</label>
+                  <select
+                    class="form-control"
+                    name="gender"
+                    id="gender"
+                    required
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male" {% if citizen.gender == "Male" %}selected {% endif %}>Male</option>
+                    <option value="Female" {% if citizen.gender == "Female" %}selected {% endif %}>Female</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="birthdate">Birthdate</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="birthdate"
+                    value="{{citizen.birthdate|date:'Y-m-d'}}"
+                    id="birthdate"
+                  />
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="birth_place">Birth Place</label>
+                      <select
+                        class="form-control"
+                        name="birth_place"
+                        id="birth_place"
+                        required
+                      >
+                        <option value="">Select Birth Place</option>
+                        {% for colline in collines %}
+                        <option value="{{colline.id}}" {% if colline == citizen.birth_place %}selected{% endif %}>
+                          {{colline.colline_name}}
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="volume_no">Volume No.</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="volume_no"
+                        id="volume_no"
+                        placeholder="Volume No. ..."
+                        value="{{citizen.volume_number}}"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" name="update_citizen" class="btn btn-success">
+                <i class="fa fa-save"></i>
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="updateParentModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="updateParentModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateParentModalTitle">
+              EDIT CITIZEN PARENTS INFO
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <fieldset class="mb-2">
+                <legend><h6>Citizen Parents</h6></legend>
+                <div class="row">
+                  <div class="col-12">
+                    <h6>Father</h6>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="father_fname">First Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="father_fname"
+                        id="father_fname"
+                        placeholder="First Name ..."
+                        {%if citizen.parents %}
+                        {% for data in citizen.parents.all %}
+                        {% if data.parent == "Father" %}
+                        value="{{data.first_name}}"
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="father_lname">Last Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="father_lname"
+                        id="father_lname"
+                        placeholder="Last Name ..."
+                        {%if citizen.parents %}
+                        {% for data in citizen.parents.all %}
+                        {% if data.parent == "Father" %}
+                        value="{{data.last_name}}"
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <h6>Mother</h6>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="mother_fname">First Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="mother_fname"
+                        id="mother_fname"
+                        placeholder="First Name ..."
+                        {%if citizen.parents %}
+                        {% for data in citizen.parents.all %}
+                        {% if data.parent == "Mother" %}
+                        value="{{data.first_name}}"
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="mother_lname">Last Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="mother_lname"
+                        id="mother_lname"
+                        placeholder="Last Name ..."
+                        {%if citizen.parents %}
+                        {% for data in citizen.parents.all %}
+                        {% if data.parent == "Mother" %}
+                        value="{{data.last_name}}"
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" name="update_parents" class="btn btn-success">
+                <i class="fa fa-save"></i>
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="delete_confirmation"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="deleteModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalTitle">
+              <i class="fa fa-trash text-danger"></i> DELETE CITIZEN INFO
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <h6 align="center">
+                Are you sure you want to delete <br />
+                Citizen "{{ citizen.first_name }} {{ citizen.last_name }}" ?
+              </h6>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="delete_citizen"
+                class="btn btn-danger"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>
