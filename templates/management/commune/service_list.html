@@ -41,22 +41,18 @@
           <table class="data-table table stripe hover nowrap">
             <thead>
               <tr>
-                <th>#</th>
                 <th class="table-plus datatable-nosort">Service Name</th>
                 <th>Requirement</th>
-                <th class="datatable-nosort">Action</th>
               </tr>
             </thead>
             <tbody>
               {% for service in services %}
               <tr>
-                <td>{{ forloop.counter }}.</td>
-                <td class="table-plus">{{ service.service_name }}</td>
-                <td>{{ service.requirements }}</td>
+                <td class="table-plus">
+                  {{ forloop.counter }}. {{ service.service_name }}
+                </td>
                 <td>
-                  <a href="{% url 'chief_serviceDetails' service.id %}">
-                    <i class="dw dw-eye"></i> View
-                  </a>
+                  <p>{{ service.requirements|linebreaksbr }}</p>
                 </td>
               </tr>
               {% endfor %}
