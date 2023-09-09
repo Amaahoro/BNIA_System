@@ -126,7 +126,7 @@ class RejectedIDCardApplication(models.Model):
         BAD_PICTURE = "Bad Picture", "Bad Picture"
 
     recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
-    application = models.ForeignKey(IDCardRegistration, verbose_name="Application", on_delete=models.CASCADE)
+    application = models.ForeignKey(IDCardRegistration, verbose_name="Application", related_name="rejected_application", on_delete=models.CASCADE)
     rejected_reason = models.CharField(verbose_name="Why rejected", choices=RejectReason.choices, default=RejectReason.BAD_PICTURE, max_length=20)
     created_date = models.DateField(verbose_name="Created Date", auto_now_add=True)
 
