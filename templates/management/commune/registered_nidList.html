@@ -7,7 +7,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NID Application List</title>
+    <title>Registered NID List</title>
   </head>
 
   <body>
@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col-md-6 col-sm-12">
           <div class="title">
-            <h4>NID Application List</h4>
+            <h4>Registered NID List</h4>
           </div>
           <nav aria-label="breadcrumb" role="navigation">
             <ol class="breadcrumb">
@@ -25,7 +25,7 @@
                 <a href="{% url 'chief_dashboard' %}">Dashboard</a>
               </li>
               <li class="breadcrumb-item active" aria-current="page">
-                NID Application List
+                Registered NID List
               </li>
             </ol>
           </nav>
@@ -35,30 +35,26 @@
     <div class="min-height-200px">
       <div class="card-box mb-30">
         <div class="pd-20">
-          <h4 class="h4">NID Application List</h4>
-          <button
-            type="button"
-            class="btn btn-info float-right"
-            data-toggle="modal"
-            data-target="#checkupModal"
-          >
-            <i class="fa fa-file-plus"></i>
-            New Application
-          </button>
+          <h4 class="h4">Registered NID List</h4>
         </div>
         <div class="card-body pb-20">
           <table class="table data-table-export hover nowrap">
             <thead>
-              <tr>
+              <tr>card_number
+                date_lost
+                description
+                email
+                contact_info
+                status
+                created_date
                 <th>#</th>
-                <th>Image</th>
                 <th class="table-plus datatable-nosort">Citizen Name</th>
-                <th>Gender</th>
-                <th>Birth Date</th>
-                <th>Resident address</th>
-                <th>Email</th>
+                <th>NID Number</th>
+                <th>Contact</th>
                 <th>Status</th>
-                <th>Registered Date</th>
+                <th>Description</th>
+                <th>Date Lost</th>
+                <th>Date</th>
               </tr>
             </thead>
             <tbody>
