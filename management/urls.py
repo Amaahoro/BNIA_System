@@ -41,4 +41,6 @@ urlpatterns = [
     path('bnia/chief_commune/publications/<int:pk>/publication_details/', views.chief_publicationDetails, name='chief_publicationDetails'),
     path('bnia/chief_commune/citizens/', views.chief_citizens, name='chief_citizens'),
     path('bnia/chief_commune/citizens/<int:pk>/citizen_details/', views.chief_citizenDetails, name='chief_citizenDetails'),
+    path('bnia/chief_commune/nid/nid_applications/', views.chief_nidApplications_list, name='chief_nidApplications_list'),
+    path('bnia/chief_commune/nid/nid_applications/new_applications/', views.chief_nidApplication, name='chief_nidApplication'),
 ]

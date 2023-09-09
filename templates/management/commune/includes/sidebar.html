@@ -67,13 +67,19 @@
           </a>
           <ul class="submenu">
             <li>
-              <a href="">New Application</a>
+              <a href="{% url 'chief_nidApplications_list' %}">
+                New Application
+              </a>
             </li>
             <li>
-              <a href="">Approved Application</a>
+              <a href="{% url 'chief_nidApplications_list' %}">
+                Approved Application
+              </a>
             </li>
             <li>
-              <a href="">Rejected Application</a>
+              <a href="{% url 'chief_nidApplications_list' %}">
+                Rejected Application
+              </a>
             </li>
           </ul>
         </li>
@@ -83,15 +89,28 @@
             ><span class="mtext">Lost NID Card report</span>
           </a>
           <ul class="submenu">
-            <li><a href="">New Report</a></li>
-            <li><a href="">Approved Report</a></li>
-            <li><a href="">Rejected Report</a></li>
+            <li>
+              <a href="{% url 'chief_nidApplications_list' %}"> New Report </a>
+            </li>
+            <li>
+              <a href="{% url 'chief_nidApplications_list' %}">
+                Approved Report
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chief_nidApplications_list' %}">
+                Rejected Report
+              </a>
+            </li>
           </ul>
         </li>
         <li>
-          <a href="" class="dropdown-toggle no-arrow">
+          <a
+            href="{% url 'chief_nidApplications_list' %}"
+            class="dropdown-toggle no-arrow"
+          >
             <span class="micon dw dw-list"></span
-            ><span class="mtext">Registered NID Card</span>
+            ><span class="mtext"> Registered NID Card </span>
           </a>
         </li>
         <li>

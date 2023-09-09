@@ -67,8 +67,15 @@ class CitizenParent(models.Model):
 
 
 class IDCardRegistration(models.Model):
+    class Status(models.TextChoices):
+        SELECT = "", "Select Status"
+        WAITING = "Waiting", "Waiting"
+        APPROVED = "Approved", "Approved"
+        REJECTED = "Rejected", "Rejected"
+
     recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
-    citizen = models.ForeignKey(Citizen, verbose_name="Citizen", on_delete=models.CASCADE)
+    citizen = models.ForeignKey(Citizen, verbose_name="Citizen", related_name="id_registrations", on_delete=models.CASCADE)
+    email = models.EmailField(verbose_name="Email Address", max_length=255, blank=False)
     resident_address = models.ForeignKey(Commune, verbose_name="Resident Address", related_name="registrations", on_delete=models.SET_NULL, blank=True, null=True)
     picture = models.ImageField(
         verbose_name="Citizen Image",
@@ -76,6 +83,7 @@ class IDCardRegistration(models.Model):
         validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])],
         blank=True, null=True
     )
+    status = models.CharField(verbose_name="Status", choices=Status.choices, default=Status.WAITING, max_length=20)
     registration_date = models.DateField(verbose_name="Registration Date", auto_now_add=True)
 
     def image(self):
@@ -129,12 +137,20 @@ class RejectedIDCardApplication(models.Model):
 
 
 class LostIDCardReport(models.Model):
+    class Status(models.TextChoices):
+        SELECT = "", "Select Status"
+        WAITING = "Waiting", "Waiting"
+        APPROVED = "Approved", "Approved"
+        REJECTED = "Rejected", "Rejected"
+
     recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
     citizen = models.ForeignKey(Citizen, verbose_name="Citizen", related_name="lost_reports", on_delete=models.CASCADE)
     card_number = models.CharField(max_length=20, verbose_name="Lost Card ID number",)
     date_lost = models.DateField(verbose_name="When lost")
     description = models.TextField(verbose_name="Description")
+    email = models.EmailField(verbose_name="Email Address", max_length=255, blank=False)
     contact_info = PhoneNumberField(verbose_name="Contact Info", blank=True, null=True)
+    status = models.CharField(verbose_name="Status", choices=Status.choices, default=Status.SELECT, max_length=20)
     created_date = models.DateField(verbose_name="Created Date", auto_now_add=True)
 
     def __str__(self):

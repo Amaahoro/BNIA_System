@@ -1355,3 +1355,88 @@ def chief_citizenDetails(request, pk):
 
 
 
+@login_required(login_url='staff_login')
+def chief_nidApplications_list(request):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        if 'verify_citizen' in request.POST:
+            # Retrieve the form data from the request
+            volume_no=request.POST.get('volume_no')
+
+            if volume_no:
+                if not Citizen.objects.filter(volume_number=volume_no).exists():
+                    messages.warning(request, "Invalid volume number!")
+                    return redirect(chief_nidApplications_list)
+                else:
+                    request.session['valid_applicant'] = Citizen.objects.get(
+                        volume_number=volume_no).id
+                    return redirect(chief_nidApplication)
+            else:
+                messages.error(
+                    request, "Error , Citizen volume number is required!")
+                return redirect(chief_nidApplications_list)
+        else:
+            # getting nid application
+            applicationsData = IDCardRegistration.objects.filter(recorded_by=request.user, status="Waiting").order_by('registration_date')
+            context = {
+                'title': 'Chief Commune - NID Applications List',
+                'nidApplication_active': 'active',
+                'nid_applications': applicationsData,
+            }
+            return render(request, 'management/commune/nid_applicationList.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def chief_nidApplication(request):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        # get applicant
+        valid_applicant = request.session.get('valid_applicant')
+        if valid_applicant:
+            # getting citizen data
+            citizenData = Citizen.objects.get(id=valid_applicant)
+            if request.method == 'POST':
+                resident_address = request.POST.get('resident_address')
+                picture = request.FILES['picture']
+                email = request.POST.get('email')
+
+                if not (resident_address and picture and email):
+                    messages.warning(request, "Error , All fields are required.")
+                    return redirect(chief_nidApplication)
+                else:
+                    # record new nid application
+                    nidApplication = IDCardRegistration(
+                        citizen=citizenData,
+                        email=email,
+                        resident_address=Commune.objects.get(id=resident_address),
+                        picture=picture,
+                        recorded_by=request.user,
+                    )
+                    nidApplication.save()
+
+                    messages.success(request, "NID Application has been submitted successfully.")
+
+                    # delete applicant session
+                    del request.session['valid_applicant']
+                    
+                    return redirect(chief_nidApplications_list)
+            else:
+                # getting commune
+                communeData = Commune.objects.filter().order_by('commune_name')
+                context = {
+                    'title': 'Chief Commune - NID Application',
+                    'nidApplication_active': 'active',
+                    'citizen': citizenData,
+                    'communes': communeData,
+                }
+                return render(request, 'management/commune/nid_application.html', context)
+        else:
+            return redirect(chief_nidApplications_list)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+

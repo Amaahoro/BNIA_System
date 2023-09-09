@@ -1,0 +1,214 @@
+{% extends "management/commune/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NID Application</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>NID Application</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_nidApplication' %}"
+                  >NID Application List</a
+                >
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                NID Application
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">Citizen Information</h4>
+        </div>
+        <div class="card-body pb-20">
+          <div class="row px-4">
+            <div class="col-lg-12 mb-4">
+              <span class="">
+                Full names:
+                <h4 class="title">
+                  {{ citizen.first_name }} {{ citizen.last_name }}
+                </h4>
+              </span>
+            </div>
+            <div class="col-sm-12 col-xl-12 mb-1">
+              <p>Gender: <span class="h5">{{ citizen.gender }}</span></p>
+            </div>
+            <div class="col-sm-12 col-xl-12 mb-1">
+              <p>Birth Date: <span class="h5">{{citizen.birthdate}}</span></p>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-1">
+              <p>
+                Birth Place: <span class="h5">{{citizen.birth_place}}</span>
+              </p>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-1">
+              <p>
+                Volume No.: <span class="h5">#{{citizen.volume_number}}</span>
+              </p>
+            </div>
+            <div class="col-lg-12 my-4">
+              <h6 class="">Citizen Parents</h6>
+              <hr />
+              {% for parent in citizen.parents.all %}
+              <p class="h6 mb-1">{{ parent.parent }}</p>
+              <div class="row">
+                <div class="col-sm-12 col-xl-6 mb-1">
+                  <p>
+                    First Name: <span class="h5">{{ parent.first_name }}</span>
+                  </p>
+                </div>
+                <div class="col-sm-12 col-xl-6 mb-1">
+                  <p>
+                    Last Name: <span class="h5">{{ parent.last_name }}</span>
+                  </p>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-box mb-30">
+        <div class="card-header">
+          <h4 class="h4">NID Application Form</h4>
+        </div>
+        <div class="card-body">
+          {% if citizen.id_registrations %}
+          <div class="row">
+            <div class="col-8 m-auto py-5 text-center">
+              <h3 class="mb-15">
+                <i class="fa fa-exclamation-triangle text-warning"></i> Warning
+              </h3>
+              <p>
+                Citizen can not allowed to apply for National Identity Card
+                twice.
+              </p>
+              {% for data in citizen.id_registrations.all %}
+              <p>
+                Registed in commune "{{data.resident_address}}" on
+                {{data.registration_date}}.
+              </p>
+              {% endfor %}
+            </div>
+          </div>
+          {% elif citizen.nid_number %}
+          <div class="row">
+            <div class="col-8 m-auto py-5 text-center">
+              <h3 class="mb-15">
+                <i class="fa fa-exclamation-triangle text-warning"></i> Warning
+              </h3>
+              <p>Citizen already has National Identity Card!</p>
+            </div>
+          </div>
+          {% else %}
+          <p class="container">
+            Fill the form below to finish the application.
+          </p>
+          <div class="row">
+            <div class="col-lg-12 mt-2">
+              <form
+                action=""
+                method="post"
+                role="form"
+                enctype="multipart/form-data"
+              >
+                {% csrf_token %}
+
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-lg-5 col-sm-12">
+                      <div class="form-group">
+                        <label for="picture">Upload a picture</label>
+                        <input
+                          id="picture"
+                          type="file"
+                          class="form-control"
+                          placeholder="upload picture"
+                          name="picture"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-10 col-sm-12 mt-2">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="resident_address">
+                              Resident Address
+                            </label>
+                            <select
+                              class="form-control"
+                              name="resident_address"
+                              id="resident_address"
+                              required
+                            >
+                              <option value="">Select Resident Address</option>
+                              {% for commune in communes %}
+                              <option value="{{commune.id}}">
+                                {{commune.commune_name}}
+                              </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="email"> Email Address </label>
+                            <input
+                              formcontrolname="email"
+                              id="email"
+                              name="email"
+                              type="email"
+                              class="form-control"
+                              placeholder="Enter an email address"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    name="update_service"
+                    class="btn btn-info btn-rounded my-5"
+                    data-toggle="modal"
+                    data-target="#serviceModal"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>
