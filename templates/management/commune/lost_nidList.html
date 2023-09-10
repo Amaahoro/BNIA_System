@@ -1,0 +1,157 @@
+{% extends "management/commune/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lost NID Report</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>Lost NID Report</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Lost NID Report
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">Lost NID Report</h4>
+          <button
+            type="button"
+            class="btn btn-info float-right"
+            data-toggle="modal"
+            data-target="#checkupModal"
+          >
+            <i class="fa fa-file-plus"></i>
+            New Report
+          </button>
+        </div>
+        <div class="card-body pb-20">
+          <table class="table data-table-export hover nowrap">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th class="table-plus datatable-nosort">Citizen Name</th>
+                <th>NID Number</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Date Lost</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for data in lost_nid_reports %}
+              <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td class="table-plus">
+                  <a
+                    class="text-info"
+                    href="{% url 'chief_citizenDetails' data.citizen.id %}"
+                  >
+                    {{data.citizen.first_name}} {{data.citizen.last_name}}
+                  </a>
+                </td>
+                <td>{{data.card_number}}</td>
+                <td>
+                  Email: {{data.email}} <br />
+                  Phone: {{data.contact_info}} <br />
+                </td>
+                <td>{{data.status}}</td>
+                <td>{{data.description|linebreaksbr}}</td>
+                <td>{{data.date_lost}}</td>
+                <td>{{data.created_date}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div
+      class="modal fade"
+      id="checkupModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="checkupModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="checkupModalTitle">
+              CITIZEN VERIFICATION
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <fieldset class="py-4">
+                <legend><h6>Citizen NID Card No.</h6></legend>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label for="nid_number">NID Card No.</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="nid_number"
+                        id="nid_number"
+                        placeholder="NID Card No. ..."
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" name="verify_citizen" class="btn btn-info">
+                <i class="icon-copy fa fa-hourglass-half" aria-hidden="true"></i>
+                Verify Citizen
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>

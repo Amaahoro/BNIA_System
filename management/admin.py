@@ -79,12 +79,12 @@ class CitizenAdmin(admin.ModelAdmin):
     list_filter = ('birthdate',)
     fieldsets = (
         ('Citizen Info', {'fields': (
-            'recorded_by', 'first_name', 'last_name', 'gender', 'birth_place', 'volume_number', 'nid_number', 'birthdate', 'createdDate',
+            'recorded_by', 'picture', 'first_name', 'last_name', 'gender', 'birth_place', 'volume_number', 'nid_number', 'birthdate', 'createdDate',
         )}),
     )
     add_fieldsets = (
         ('Register New Citizen', {'fields': (
-            'recorded_by', 'first_name', 'last_name', 'gender', 'birth_place', 'volume_number', 'nid_number', 'birthdate', 'createdDate',
+            'recorded_by', 'picture', 'first_name', 'last_name', 'gender', 'birth_place', 'volume_number', 'nid_number', 'birthdate', 'createdDate',
         )}),
     )
     search_fields = ('first_name', 'last_name', 'volume_number', 'nid_number',)
@@ -156,10 +156,10 @@ class LostIDCardReportAdmin(admin.ModelAdmin):
     list_display = ('citizen','card_number','date_lost','description','contact_info','created_date',)
     list_filter = ('created_date',)
     fieldsets = (
-        ('Lost ID Card Report Info', {'fields': ('recorded_by','citizen','card_number','date_lost','description','contact_info','created_date',)}),
+        ('Lost ID Card Report Info', {'fields': ('recorded_by','citizen','card_number','date_lost','status','description','contact_info','created_date',)}),
     )
     add_fieldsets = (
-        ('New Lost ID Card Report', {'fields': ('recorded_by','citizen','card_number','date_lost','description','contact_info','created_date',)}),
+        ('New Lost ID Card Report', {'fields': ('recorded_by','citizen','card_number','date_lost','status','description','contact_info','created_date',)}),
     )
     search_fields = ('card_number','contact_info',)
     ordering = ('created_date',)

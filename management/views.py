@@ -1391,3 +1391,103 @@ def chief_nidApplication(request):
 
 
 
+
+@login_required(login_url='staff_login')
+def chief_lostNID_report(request):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        if 'verify_citizen' in request.POST:
+            # Retrieve the form data from the request
+            nid_number=request.POST.get('nid_number')
+
+            if nid_number:
+                if not Citizen.objects.filter(nid_number=nid_number).exists():
+                    messages.warning(request, "Invalid NID Card number!")
+                    return redirect(chief_lostNID_report)
+                else:
+                    request.session['valid_applicant'] = Citizen.objects.get(nid_number=nid_number).id
+                    return redirect(chief_newLostNID_report)
+            else:
+                messages.error(
+                    request, "Error , Citizen NID Card number is required!")
+                return redirect(chief_lostNID_report)
+        else:
+            # getting nid lost reports
+            reportsData = LostIDCardReport.objects.filter(recorded_by=request.user).order_by('created_date')
+            context = {
+                'title': 'Lost NID Report',
+                'lost_nid_active': 'active',
+                'lost_nid_reports': reportsData,
+            }
+            return render(request, 'management/commune/lost_nidList.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def chief_newLostNID_report(request):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        # get applicant
+        valid_applicant = request.session.get('valid_applicant')
+        if valid_applicant:
+            # getting citizen data
+            citizenData = Citizen.objects.get(id=valid_applicant)
+            if request.method == 'POST':
+                date_lost = request.POST.get('date_lost')
+                description = request.POST.get('description')
+                email = request.POST.get('email')
+                contact_info = request.POST.get('contact_info')
+
+                if not (date_lost and description and contact_info and email):
+                    messages.warning(request, "Error , All fields are required.")
+                    return redirect(chief_newLostNID_report)
+                else:
+                    # record lost nid report
+                    lostNID = LostIDCardReport(
+                        citizen=citizenData,
+                        card_number=citizenData.nid_number,
+                        email=email,
+                        contact_info=contact_info,
+                        description=description,
+                        date_lost=date_lost,
+                        recorded_by=request.user,
+                    )
+                    lostNID.save()
+
+                    messages.success(request, "Lost NID Report has been submitted successfully.")
+
+                    # delete applicant session
+                    del request.session['valid_applicant']
+                    
+                    return redirect(chief_lostNID_report)
+            else:
+                context = {
+                    'title': 'Lost NID Report',
+                    'lost_nid_active': 'active',
+                    'citizen': citizenData,
+                }
+                return render(request, 'management/commune/lost_nidReport.html', context)
+        else:
+            return redirect(chief_lostNID_report)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def chief_registeredNID_list(request):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        # getting nid application
+        registered_nid = RegisteredIDCard.objects.filter(recorded_by=request.user).exclude(is_taken=True).order_by('created_date')
+        context = {
+            'title': 'Registered NID List',
+            'registered_nid_active': 'active',
+            'registered_nid': registered_nid,
+        }
+        return render(request, 'management/commune/registered_nidList.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+

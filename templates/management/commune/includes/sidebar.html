@@ -70,29 +70,17 @@
           </a>
         </li>
         <li class="dropdown">
-          <a href="javascript:;" class="dropdown-toggle">
-            <span class="micon dw dw-list"></span
-            ><span class="mtext">Lost NID Card report</span>
+          <a
+            href="{% url 'chief_lostNID_report' %}"
+            class="dropdown-toggle no-arrow"
+          >
+            <span class="micon dw dw-list"></span>
+            <span class="mtext">Lost NID Card report</span>
           </a>
-          <ul class="submenu">
-            <li>
-              <a href="{% url 'chief_nidApplications_list' %}"> New Report </a>
-            </li>
-            <li>
-              <a href="{% url 'chief_nidApplications_list' %}">
-                Approved Report
-              </a>
-            </li>
-            <li>
-              <a href="{% url 'chief_nidApplications_list' %}">
-                Rejected Report
-              </a>
-            </li>
-          </ul>
         </li>
         <li>
           <a
-            href="{% url 'chief_nidApplications_list' %}"
+            href="{% url 'chief_registeredNID_list' %}"
             class="dropdown-toggle no-arrow"
           >
             <span class="micon dw dw-list"></span

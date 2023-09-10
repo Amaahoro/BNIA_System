@@ -45,6 +45,12 @@ class Citizen(models.Model):
     volume_number = models.CharField(verbose_name="Volume Number", max_length=50, unique=True, blank=False, null=False)
     nid_number = models.CharField(verbose_name="NID Card Number", max_length=50, unique=True, blank=True, null=True)
     birthdate = models.DateField(verbose_name="Birthdate", blank=False)
+    picture = models.ImageField(
+        verbose_name="Citizen Image",
+        upload_to="citizen/images/",
+        validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])],
+        blank=True, null=True
+    )
     createdDate = models.DateField(verbose_name="Created Date", auto_now_add=True)
 
     def __str__(self):
@@ -150,7 +156,7 @@ class LostIDCardReport(models.Model):
     description = models.TextField(verbose_name="Description")
     email = models.EmailField(verbose_name="Email Address", max_length=255, blank=False)
     contact_info = PhoneNumberField(verbose_name="Contact Info", blank=True, null=True)
-    status = models.CharField(verbose_name="Status", choices=Status.choices, default=Status.SELECT, max_length=20)
+    status = models.CharField(verbose_name="Status", choices=Status.choices, default=Status.WAITING, max_length=20)
     created_date = models.DateField(verbose_name="Created Date", auto_now_add=True)
 
     def __str__(self):

@@ -60,12 +60,21 @@
               >
                 <i class="fa fa-edit text-primary"></i> Edit
               </button>
+              {% if citizen.picture %}
+              <img
+                class="profile-user-img img-responsive img-circle"
+                src="{{citizen.picture.url}}"
+                width="140px"
+                alt="{{citizen.first_name}} image"
+              />
+              {% else %}
               <img
                 class="profile-user-img img-responsive img-circle"
                 src="{% static 'staff/vendors/images/anonymous.png' %}"
                 width="140px"
                 alt="{{citizen.first_name}} image"
               />
+              {% endif %}
             </div>
             <div class="col-lg-12 mb-4">
               <span class="">
@@ -86,6 +95,11 @@
             </div>
             <div class="col-sm-12 col-xl-6 mb-1">
               <p>Volume No.: <span class="h5">#{{citizen.volume_number}}</span></p>
+            </div>
+            <div class="col-sm-12 col-xl-12 mb-1">
+              <p>
+                NID Card No.: <span class="h5">{{ citizen.nid_number }}</span>
+              </p>
             </div>
             <div class="col-lg-12 my-4">
               <button
