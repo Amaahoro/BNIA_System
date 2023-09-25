@@ -57,7 +57,10 @@
               <p>Gender: <span class="h5">{{ citizen.gender }}</span></p>
             </div>
             <div class="col-sm-12 col-xl-12 mb-1">
-              <p>Birth Date: <span class="h5">{{citizen.birthdate}}</span></p>
+              <p>
+                Birth Date:
+                <span class="h5">{{citizen.birthdate|date:'d/m/Y'}}</span>
+              </p>
             </div>
             <div class="col-sm-12 col-xl-6 mb-1">
               <p>

@@ -30,7 +30,7 @@
         <li>
           <a
             href="{% url 'chief_dashboard' %}"
-            class="dropdown-toggle no-arrow"
+            class="dropdown-toggle no-arrow {{dash_active}}"
           >
             <span class="micon dw dw-house-1"></span
             ><span class="mtext">Dashboard</span>
@@ -41,7 +41,10 @@
           <div class="sidebar-small-cap">Services</div>
         </li>
         <li class="dropdown">
-          <a href="{% url 'chief_services' %}" class="dropdown-toggle no-arrow">
+          <a
+            href="{% url 'chief_services' %}"
+            class="dropdown-toggle no-arrow {{service_active}}"
+          >
             <span class="micon dw dw-list"></span
             ><span class="mtext">Services</span>
           </a>
@@ -51,7 +54,10 @@
           <div class="sidebar-small-cap">Citizenship</div>
         </li>
         <li class="dropdown">
-          <a href="{% url 'chief_citizens' %}" class="dropdown-toggle no-arrow">
+          <a
+            href="{% url 'chief_citizens' %}"
+            class="dropdown-toggle no-arrow {{citizens_active}}"
+          >
             <span class="micon dw dw-list"></span
             ><span class="mtext">Citizens</span>
           </a>
@@ -63,7 +69,7 @@
         <li class="dropdown">
           <a
             href="{% url 'chief_nidApplications_list' %}"
-            class="dropdown-toggle no-arrow"
+            class="dropdown-toggle no-arrow {{nidApplication_active}}"
           >
             <span class="micon dw dw-list"></span
             ><span class="mtext">NID Card Application</span>
@@ -72,7 +78,7 @@
         <li class="dropdown">
           <a
             href="{% url 'chief_lostNID_report' %}"
-            class="dropdown-toggle no-arrow"
+            class="dropdown-toggle no-arrow {{lost_nid_active}}"
           >
             <span class="micon dw dw-list"></span>
             <span class="mtext">Lost NID Card report</span>
@@ -81,23 +87,10 @@
         <li>
           <a
             href="{% url 'chief_registeredNID_list' %}"
-            class="dropdown-toggle no-arrow"
+            class="dropdown-toggle no-arrow {{registered_nid_active}}"
           >
             <span class="micon dw dw-list"></span
             ><span class="mtext"> Registered NID Card </span>
-          </a>
-        </li>
-        <li>
-          <div class="dropdown-divider"></div>
-          <div class="sidebar-small-cap">Publication</div>
-        </li>
-        <li>
-          <a
-            href="{% url 'chief_publications' %}"
-            class="dropdown-toggle no-arrow"
-          >
-            <span class="micon dw dw-list"></span
-            ><span class="mtext">Publication</span>
           </a>
         </li>
         <li class="mb-5"></li>

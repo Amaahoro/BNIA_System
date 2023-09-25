@@ -36,12 +36,14 @@ urlpatterns = [
     path('bnia/chief_commune/dashboard/', views.chief_dashboard, name='chief_dashboard'),
     path('bnia/chief_commune/profile/', views.chief_profile, name='chief_profile'),
     path('bnia/chief_commune/services/', views.chief_services, name='chief_services'),
-    path('bnia/chief_commune/publications/', views.chief_publications, name='chief_publications'),
     path('bnia/chief_commune/citizens/', views.chief_citizens, name='chief_citizens'),
     path('bnia/chief_commune/citizens/<int:pk>/citizen_details/', views.chief_citizenDetails, name='chief_citizenDetails'),
     path('bnia/chief_commune/nid/nid_applications/', views.chief_nidApplications_list, name='chief_nidApplications_list'),
     path('bnia/chief_commune/nid/nid_applications/new_applications/', views.chief_nidApplication, name='chief_nidApplication'),
+    path('bnia/chief_commune/nid/nid_applications/<int:pk>/application/', views.chief_nidApplicationDetail, name='chief_nidApplicationDetail'),
     path('bnia/chief_commune/nid/lost_nid_report/', views.chief_lostNID_report, name='chief_lostNID_report'),
     path('bnia/chief_commune/nid/lost_nid_report/new_lost_report/', views.chief_newLostNID_report, name='chief_newLostNID_report'),
+    path('bnia/chief_commune/nid/lost_nid_report/<int:pk>/report/', views.chief_NID_reportDetail, name='chief_NID_reportDetail'),
     path('bnia/chief_commune/nid/registered_nid/', views.chief_registeredNID_list, name='chief_registeredNID_list'),
-]
+    path('bnia/chief_commune/nid/registered_nid/<int:pk>/confirmation/', views.chief_NID_recievedConfirm, name='chief_NID_recievedConfirm'),
+] 

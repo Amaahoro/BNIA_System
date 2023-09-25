@@ -67,7 +67,7 @@
                 <td class="table-plus">
                   <a
                     class="text-info"
-                    href="{% url 'chief_citizenDetails' data.citizen.id %}"
+                    href="{% url 'chief_NID_reportDetail' data.id %}"
                   >
                     {{data.citizen.first_name}} {{data.citizen.last_name}}
                   </a>
@@ -79,8 +79,8 @@
                 </td>
                 <td>{{data.status}}</td>
                 <td>{{data.description|linebreaksbr}}</td>
-                <td>{{data.date_lost}}</td>
-                <td>{{data.created_date}}</td>
+                <td>{{data.date_lost|date:'d/m/Y'}}</td>
+                <td>{{data.created_date|date:'d/m/Y'}}</td>
               </tr>
               {% endfor %}
             </tbody>

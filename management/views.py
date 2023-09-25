@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.conf import settings
@@ -1039,7 +1040,7 @@ def chief_dashboard(request):
         citizens = Citizen.objects.filter()
 
         context = {
-            'title': 'Chief Commune - Dashboard',
+            'title': 'Dashboard',
             'dash_active': 'active',
             'citizens': citizens,
         }
@@ -1091,7 +1092,7 @@ def chief_profile(request):
 
         else:
             context = {
-                'title': 'Chief Commune - Profile',
+                'title': 'My Profile',
             }
             return render(request, 'management/commune/profile.html', context)
     else:
@@ -1107,31 +1108,12 @@ def chief_services(request):
         # getting services
         ServiceData = Service.objects.filter().order_by('service_name')
         context = {
-            'title': 'Chief Commune - Service List',
+            'title': 'Service List',
             'service_active': 'active',
             'services': ServiceData,
             # 'request_data': request_data,
         }
         return render(request, 'management/commune/service_list.html', context)
-    else:
-        messages.warning(request, ('You have to login to view the page!'))
-        return redirect(staffLogin)
-
-
-
-@login_required(login_url='staff_login')
-def chief_publications(request):
-    if request.user.is_authenticated and request.user.is_chief_commune == True:
-        # request_data = Application.objects.filter(status="Waiting")
-        # getting publications
-        PublicationData = Publication.objects.filter().order_by('publication_date')
-        context = {
-            'title': 'Chief Commune - Publications List',
-            'publication_active': 'active',
-            'publications': PublicationData,
-            # 'request_data': request_data,
-        }
-        return render(request, 'management/commune/publication_list.html', context)
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(staffLogin)
@@ -1200,7 +1182,7 @@ def chief_citizens(request):
             # getting citizen
             citizensData = Citizen.objects.filter(birth_place__commune=request.user.commune).order_by('birth_place', 'createdDate')
             context = {
-                'title': 'Chief Commune - Citizens List',
+                'title': str(request.user.commune)+' Citizens',
                 'citizens_active': 'active',
                 'citizens': citizensData,
                 'collines': CollineData,
@@ -1221,82 +1203,15 @@ def chief_citizenDetails(request, pk):
             # if exists
             foundData = Citizen.objects.get(birth_place__commune=request.user.commune, id=citizen_id)
 
-            if 'update_citizen' in request.POST:
-                # Retrieve the form data from the request
-                first_name=request.POST.get('first_name')
-                last_name=request.POST.get('last_name')
-                gender=request.POST.get('gender')
-                birthdate=request.POST.get('birthdate')
-                birth_place=request.POST.get('birth_place')
-                volume_no=request.POST.get('volume_no')
-
-
-                if first_name and last_name and gender and birthdate and birth_place and volume_no:
-                    if Citizen.objects.filter(volume_number=volume_no).exclude(id=citizen_id):
-                        messages.warning(request, "Volume number "+volume_no+", already taken.")
-                        return redirect(chief_citizenDetails, pk)
-                    else:
-                        # Update citizen
-                        citizenDetails = foundData
-                        citizenDetails.first_name=first_name
-                        citizenDetails.last_name=last_name
-                        citizenDetails.gender=gender
-                        citizenDetails.birthdate=birthdate
-                        citizenDetails.birth_place=Colline.objects.get(id=birth_place)
-                        citizenDetails.volume_number=volume_no
-                        citizenDetails.save()
-                        
-                        messages.success(
-                        request, "Citizen "+first_name+" "+last_name+", Updated successfully.")
-                        return redirect(chief_citizenDetails, pk)
-                else:
-                    messages.error(request, ('Error , All fields are required!'))
-                    return redirect(chief_citizenDetails, pk)
-            
-            if 'update_parents' in request.POST:
-                # Retrieve the form data from the request
-                father_fname=request.POST.get('father_fname')
-                father_lname=request.POST.get('father_lname')
-                mother_fname=request.POST.get('mother_fname')
-                mother_lname=request.POST.get('mother_lname')
-
-                if father_fname and father_lname and mother_fname and mother_lname:
-                    # Update or create parent records if provided
-                    father = CitizenParent.objects.filter(citizen=foundData, parent=CitizenParent.Parent.FATHER).first()
-                    if father:
-                        father.first_name = father_fname
-                        father.last_name = father_lname
-                        father.save()
-
-                    mother = CitizenParent.objects.filter(citizen=foundData, parent=CitizenParent.Parent.MOTHER).first()
-                    if mother:
-                        mother.first_name = mother_fname
-                        mother.last_name = mother_lname
-                        mother.save()
-                        
-                    messages.success(request, "Citizen parents Info Updated successfully.")
-                    return redirect(chief_citizenDetails, pk)
-                else:
-                    messages.error(request, ('Error , All fields are required!'))
-                    return redirect(chief_citizenDetails, pk)
-
-            elif 'delete_citizen' in request.POST:
-                # Delete citizen
-                delete_chief = foundData
-                delete_chief.delete()
-                messages.success(request, "Citizen info deleted successfully.")
-                return redirect(chief_citizens)
-
-            else:
-                # getting colline
-                CollineData = Colline.objects.filter(commune=request.user.commune).order_by('colline_name')
-                context = {
-                    'title': 'Chief Commune - Citizen Info',
-                    'citizens_active': 'active',
-                    'citizen': foundData,
-                    'collines': CollineData,
-                }
-                return render(request, 'management/commune/citizen_details.html', context)
+            # getting colline
+            CollineData = Colline.objects.filter(commune=request.user.commune).order_by('colline_name')
+            context = {
+                'title': 'Citizen Info',
+                'citizens_active': 'active',
+                'citizen': foundData,
+                'collines': CollineData,
+            }
+            return render(request, 'management/commune/citizen_details.html', context)
         else:
             messages.error(request, ('Citizen not found'))
             return redirect(chief_citizens)
@@ -1329,7 +1244,7 @@ def chief_nidApplications_list(request):
             # getting nid application
             applicationsData = IDCardRegistration.objects.filter(recorded_by=request.user, status="Waiting").order_by('registration_date')
             context = {
-                'title': 'Chief Commune - NID Applications List',
+                'title': 'NID Applications List',
                 'nidApplication_active': 'active',
                 'nid_applications': applicationsData,
             }
@@ -1377,7 +1292,7 @@ def chief_nidApplication(request):
                 # getting commune
                 communeData = Commune.objects.filter().order_by('commune_name')
                 context = {
-                    'title': 'Chief Commune - NID Application',
+                    'title': 'NID Application',
                     'nidApplication_active': 'active',
                     'citizen': citizenData,
                     'communes': communeData,
@@ -1388,6 +1303,31 @@ def chief_nidApplication(request):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def chief_nidApplicationDetail(request, pk):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        application_id = pk
+        # getting nid application
+        if IDCardRegistration.objects.filter(recorded_by=request.user, id=application_id).exists():
+            # if exists
+            foundData = IDCardRegistration.objects.get(id=application_id)
+
+            context = {
+                'title': 'NID application details',
+                'nidApplication_active': 'active',
+                'data': foundData,
+            }
+            return render(request, 'management/commune/nid_applicationDetails.html', context)
+        else:
+            messages.error(request, ('NID Application not found'))
+            return redirect(chief_nidApplications_list)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
 
 
 
@@ -1477,10 +1417,35 @@ def chief_newLostNID_report(request):
 
 
 @login_required(login_url='staff_login')
+def chief_NID_reportDetail(request, pk):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        report_id = pk
+        # getting report
+        if LostIDCardReport.objects.filter(recorded_by=request.user, id=report_id).exists():
+            # if exists
+            foundData = LostIDCardReport.objects.get(id=report_id)
+            
+            context = {
+                'title': 'Lost NID Report details',
+                'lost_nid_active': 'active',
+                'report': foundData,
+            }
+            return render(request, 'management/commune/lost_nidReportDetails.html', context)
+        else:
+            messages.error(request, ('Data not found'))
+            return redirect(chief_lostNID_report)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+
+@login_required(login_url='staff_login')
 def chief_registeredNID_list(request):
     if request.user.is_authenticated and request.user.is_chief_commune == True:
         # getting nid application
-        registered_nid = RegisteredIDCard.objects.filter(recorded_by=request.user).exclude(is_taken=True).order_by('created_date')
+        registered_nid = RegisteredIDCard.objects.filter(placeofissue=request.user.commune).exclude(is_taken=True).order_by('created_date')
         context = {
             'title': 'Registered NID List',
             'registered_nid_active': 'active',
@@ -1491,3 +1456,35 @@ def chief_registeredNID_list(request):
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(staffLogin)
 
+
+
+@login_required(login_url='staff_login')
+def chief_NID_recievedConfirm(request, pk):
+    if request.user.is_authenticated and request.user.is_chief_commune == True:
+        # getting registered nid data
+        if RegisteredIDCard.objects.filter(placeofissue=request.user.commune, id=pk).exists():
+            # if exists
+            foundData = RegisteredIDCard.objects.get(id=pk)
+            
+            if 'confirm' in request.POST:
+                # confirm that citizen recieved nid card
+                foundData.is_taken=True
+                foundData.taken_date=timezone.now()
+                foundData.save()
+                        
+                messages.success(
+                request, "Confirmed successfully.")
+                return redirect(chief_registeredNID_list)
+            else:
+                context = {
+                    'title': 'NID Recieved Confirm',
+                    'registered_nid_active': 'active',
+                    'data': foundData,
+                }
+                return render(request, 'management/commune/nid_recievedConfirm.html', context)
+        else:
+            messages.error(request, ('Data not found'))
+            return redirect(chief_registeredNID_list)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)

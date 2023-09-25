@@ -1,0 +1,116 @@
+{% extends "management/commune/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lost NID Report Details</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>Lost NID Report Details</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_lostNID_report' %}"
+                  >Lost NID Report List</a
+                >
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Lost NID Report Details
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">Lost NID Report Detail</h4>
+        </div>
+        <div class="card-body pb-20">
+          <div class="row px-4">
+            <h6 class="">Citizen Information</h6>
+            <hr />
+            <div class="col-lg-12 mb-4">
+              <span class="">
+                Full names:
+                <h4 class="title">
+                  <a
+                    class="text-info"
+                    href="{% url 'chief_citizenDetails' report.citizen.id %}"
+                  >
+                    {{report.citizen.first_name}} {{report.citizen.last_name}}
+                  </a>
+                </h4>
+              </span>
+            </div>
+            <div class="col-lg-12 mb-1">
+              <div class="row">
+                <div class="col-sm-12 col-xl-6 mb-1">
+                  <p>
+                    Contact Info:
+                    <span class="h5">{{ report.contact_info }}</span>
+                  </p>
+                </div>
+                <div class="col-sm-12 col-xl-6 mb-1">
+                  <p>
+                    Email Address: <span class="h5">{{ report.email }}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <h6 class="">Report Information</h6>
+            <hr />
+            <div class="col-sm-12 col-xl-12 mb-1">
+              <p>
+                NID Card No.:
+                <span class="h5">{{ report.card_number }}</span>
+              </p>
+            </div>
+            <div class="col-sm-12 col-xl-12 mb-1">
+              <p>
+                When lost:
+                <span class="h5">{{report.date_lost|date:'d/m/Y'}}</span>
+              </p>
+            </div>
+            <div class="col-sm-12 col-xl-12 mb-1">
+              <p>
+                Status:
+                <span class="h5">{{report.status}}</span>
+              </p>
+            </div>
+            <div class="col-lg-12 mb-1">
+              <p>Description:</p>
+              <div class="form-group">
+                <label for="phone">Description</label>
+                <textarea
+                  class="form-control bg-white"
+                  rows="10"
+                  placeholder="Description ..."
+                  name="description"
+                  disabled
+                >{{report.description|linebreaksbr }}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

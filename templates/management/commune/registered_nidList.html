@@ -57,22 +57,17 @@
               <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td class="table-plus">
-                  <a
-                    class="text-info"
-                    href="{% url 'chief_citizenDetails' data.citizen.id %}"
-                  >
-                    {{data.citizen.first_name}} {{data.citizen.last_name}}
-                  </a>
+                  {{data.citizen.first_name}} {{data.citizen.last_name}}
                 </td>
                 <td>{{data.card_number}}</td>
                 <td>{{data.placeofissue}}</td>
-                <td>{{data.created_date}}</td>
+                <td>{{data.created_date|date:'d/m/Y'}}</td>
                 <td>{{data.is_taken}}</td>
-                <td>{{data.taken_date}}</td>
+                <td>{{data.taken_date|date:'d/m/Y'}}</td>
                 <td>
                   <a
                     class="text-info"
-                    href="{% url 'chief_citizenDetails' data.citizen.id %}"
+                    href="{% url 'chief_NID_recievedConfirm' data.id %}"
                   >
                     Confirm Recieved
                   </a>

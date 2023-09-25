@@ -85,17 +85,17 @@
                 <td class="table-plus">
                   <a
                     class="text-info"
-                    href="{% url 'chief_citizenDetails' data.citizen.id %}"
+                    href="{% url 'chief_nidApplicationDetail' data.id %}"
                   >
                     {{data.citizen.first_name}} {{data.citizen.last_name}}
                   </a>
                 </td>
                 <td>{{data.citizen.gender}}</td>
-                <td>{{data.citizen.birthdate}}</td>
+                <td>{{data.citizen.birthdate|date:'d/m/Y'}}</td>
                 <td>{{data.resident_address}}</td>
                 <td>{{data.email}}</td>
                 <td>{{data.status}}</td>
-                <td>{{data.citizen.createdDate}}</td>
+                <td>{{data.citizen.createdDate|date:'d/m/Y'}}</td>
               </tr>
               {% endfor %}
             </tbody>

@@ -53,9 +53,10 @@
                 <th>#</th>
                 <th class="table-plus datatable-nosort">Citizen Name</th>
                 <th>Gender</th>
+                <th>Volume No.</th>
+                <th>NID Card No.</th>
                 <th>Birth Date</th>
                 <th>Birth Place</th>
-                <th>Volume No.</th>
                 <th>Registered Date</th>
               </tr>
             </thead>
@@ -73,10 +74,11 @@
                   </a>
                 </td>
                 <td>{{citizen.gender}}</td>
-                <td>{{citizen.birthdate}}</td>
-                <td>{{citizen.birth_place}}</td>
                 <td>#{{citizen.volume_number}}</td>
-                <td>{{citizen.createdDate}}</td>
+                <td>{{citizen.nid_number}}</td>
+                <td>{{citizen.birthdate|date:'d/m/Y'}}</td>
+                <td>{{citizen.birth_place}}</td>
+                <td>{{citizen.createdDate|date:'d/m/Y'}}</td>
               </tr>
               {% endfor %}
             </tbody>

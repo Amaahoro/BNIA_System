@@ -1,0 +1,174 @@
+{% extends "management/commune/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NID Recieved Confirm</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>NID Recieved Confirm</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_dashboard' %}"> Dashboard </a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'chief_registeredNID_list' %}">
+                  Registered NID List
+                </a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                NID Recieved Confirm
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">NID Recieved Confirmation</h4>
+        </div>
+        <div class="card-body pb-20">
+          <div class="row px-4">
+            <h6 class="">Citizen Information</h6>
+            <hr />
+            <div class="col-12 mb-1">
+              <button
+                type="button"
+                class="btn btn-light btn-rounded float-right mr-1"
+                data-toggle="modal"
+                data-target="#confirmModel"
+              >
+                <i class="fa fa-check text-success"></i> NID Card Recieved ?
+              </button>
+              {% if data.citizen.picture %}
+              <img
+                class="profile-user-img img-responsive img-circle"
+                src="{{data.citizen.picture.url}}"
+                width="200px"
+                alt="{{data.citizen.first_name}} image"
+              />
+              {% else %}
+              <img
+                class="profile-user-img img-responsive img-circle"
+                src="{% static 'staff/vendors/images/anonymous.png' %}"
+                width="200px"
+                alt="{{data.citizen.first_name}} image"
+              />
+              {% endif %}
+            </div>
+            <div class="col-lg-12 mb-4">
+              <span class="">
+                Full names:
+                <h4 class="title">
+                  <a
+                    class="text-info"
+                    href="{% url 'chief_citizenDetails' data.citizen.id %}"
+                  >
+                    {{data.citizen.first_name}} {{data.citizen.last_name}}
+                  </a>
+                </h4>
+              </span>
+            </div>
+            <div class="col-lg-12 mb-1">
+              <p>
+                Volume No.:
+                <span class="h5">#{{data.citizen.volume_number}}</span>
+              </p>
+            </div>
+            <h6 class="my-3">More Information</h6>
+            <hr />
+            <div class="col-lg-12 mb-2">
+              <div class="row">
+                <div class="col-sm-12 col-lg-6 mb-1">
+                  <p>
+                    NID Card No.:
+                    <span class="h5">{{ data.card_number }}</span>
+                  </p>
+                </div>
+                <div class="col-sm-12 col-lg-6 mb-1">
+                  <p>
+                    Place of Issue:
+                    <span class="h5">{{data.placeofissue}}</span>
+                  </p>
+                </div>
+                <div class="col-sm-12 col-xl-12 mb-1">
+                  <p>
+                    NID Card has taken?:
+                    <span class="h5">{{data.is_taken}}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="confirmModel"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="confirmModelTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmModelTitle">
+              <i class="fa fa-check text-success"></i> NID Recieved Confirmation
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <h6 align="center">
+                Are you sure you want to confirm that <br />
+                Citizen "{{data.citizen.first_name}} {{data.citizen.last_name}}"
+                recieved NID Card ?
+              </h6>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" name="confirm" class="btn btn-success">
+                Yes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>
