@@ -1,0 +1,100 @@
+{% extends "management/administrator/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NID Application List</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>NID Application List</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'adm_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                NID Application List
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">NID Application List</h4>
+        </div>
+        <div class="card-body pb-20">
+          <table class="table data-table-export hover nowrap">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th></th>
+                <th class="table-plus datatable-nosort">Citizen Name</th>
+                <th>Gender</th>
+                <th>Birth Date</th>
+                <th>Resident address</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Registered Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for data in nid_applications %}
+              <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>
+                  {% if data.picture %}
+                  <img
+                    class="profile-user-img img-responsive img-circle"
+                    src="{{data.picture.url}}"
+                    width="70px"
+                    alt="{{chief.first_name}} image"
+                  />
+                  {% else %}
+                  <img
+                    class="profile-user-img img-responsive img-circle"
+                    src="{% static 'staff/vendors/images/anonymous.png' %}"
+                    width="70px"
+                    alt="{{chief.first_name}} image"
+                  />
+                  {% endif%}
+                </td>
+                <td class="table-plus">
+                  <a
+                    class="text-info"
+                    href="{% url 'adm_nidApplicationDetail' data.id %}"
+                  >
+                    {{data.citizen.first_name}} {{data.citizen.last_name}}
+                  </a>
+                </td>
+                <td>{{data.citizen.gender}}</td>
+                <td>{{data.citizen.birthdate|date:'d/m/Y'}}</td>
+                <td>{{data.resident_address}}</td>
+                <td>{{data.email}}</td>
+                <td>{{data.status}}</td>
+                <td>{{data.citizen.createdDate|date:'d/m/Y'}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>

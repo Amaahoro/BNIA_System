@@ -1,0 +1,131 @@
+{% extends "management/administrator/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registered NID Card Details</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>Registered NID Card Details</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'adm_dashboard' %}"> Dashboard </a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'adm_registeredNID_list' %}">
+                  Registered NID Card List
+                </a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Registered NID Card Details
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">Registered NID Card Details</h4>
+        </div>
+        <div class="card-body pb-20">
+          <div class="row px-4">
+            <h6 class="">Citizen Information</h6>
+            <hr />
+            <div class="col-12 mb-1">
+              {% if data.citizen.picture %}
+              <img
+                class="profile-user-img img-responsive img-circle"
+                src="{{data.citizen.picture.url}}"
+                width="200px"
+                alt="{{data.citizen.first_name}} image"
+              />
+              {% else %}
+              <img
+                class="profile-user-img img-responsive img-circle"
+                src="{% static 'staff/vendors/images/anonymous.png' %}"
+                width="200px"
+                alt="{{data.citizen.first_name}} image"
+              />
+              {% endif %}
+            </div>
+            <div class="col-lg-12 mb-4">
+              <span class="">
+                Full names:
+                <h4 class="title">
+                  <a
+                    class="text-info"
+                    href="{% url 'adm_citizenDetails' data.citizen.id %}"
+                  >
+                    {{data.citizen.first_name}} {{data.citizen.last_name}}
+                  </a>
+                </h4>
+              </span>
+            </div>
+            <div class="col-lg-12 mb-1">
+              <p>
+                Volume No.:
+                <span class="h5">#{{data.citizen.volume_number}}</span>
+              </p>
+            </div>
+            <h6 class="my-3">More Information</h6>
+            <hr />
+            <div class="col-lg-12 mb-2">
+              <div class="row">
+                <div class="col-sm-12 col-lg-6 mb-1">
+                  <p>
+                    NID Card No.:
+                    <span class="h5">{{ data.card_number }}</span>
+                  </p>
+                </div>
+                <div class="col-sm-12 col-lg-6 mb-1">
+                  <p>
+                    Place of Issue:
+                    <span class="h5">{{data.placeofissue}}</span>
+                  </p>
+                </div>
+                <div class="col-sm-12 col-xl-12 mb-1">
+                  <p>
+                    NID Card has taken?:
+                    <span class="h5">{{data.is_taken}}</span>
+                  </p>
+                </div>
+                <div class="col-sm-12 col-xl-12 mb-1">
+                  <p>
+                    Date taken:
+                    <span class="h5">{{data.taken_date|date:'d/m/Y'}}</span>
+                  </p>
+                </div>
+                <div class="col-sm-12 col-xl-12 mb-1">
+                  <p>
+                    Processed by:
+                    <span class="h5">
+                      {{data.recorded_by}}, Commune {{data.recorded_by.commune}}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>

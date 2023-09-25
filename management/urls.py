@@ -31,6 +31,12 @@ urlpatterns = [
     path('bnia/administrator/publications/<int:pk>/publication_details/', views.adm_publicationDetails, name='adm_publicationDetails'),
     path('bnia/administrator/citizens/', views.adm_citizens, name='adm_citizens'),
     path('bnia/administrator/citizens/<int:pk>/citizen_details/', views.adm_citizenDetails, name='adm_citizenDetails'),
+    path('bnia/administrator/nid/nid_applications/', views.adm_nidApplications_list, name='adm_nidApplications_list'),
+    path('bnia/administrator/nid/nid_applications/<int:pk>/application/', views.adm_nidApplicationDetail, name='adm_nidApplicationDetail'),
+    path('bnia/administrator/nid/lost_nid_report/', views.adm_lostNID_report, name='adm_lostNID_report'),
+    path('bnia/administrator/nid/lost_nid_report/<int:pk>/report/', views.adm_NID_reportDetail, name='adm_NID_reportDetail'),
+    path('bnia/administrator/nid/registered_nid/', views.adm_registeredNID_list, name='adm_registeredNID_list'),
+    path('bnia/administrator/nid/registered_nid/<int:pk>/confirmation/', views.adm_registeredNIDCardDetails, name='adm_registeredNIDCardDetails'),
     
     # national chief commune
     path('bnia/chief_commune/dashboard/', views.chief_dashboard, name='chief_dashboard'),

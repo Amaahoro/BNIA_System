@@ -1,0 +1,85 @@
+{% extends "management/administrator/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lost NID Report</title>
+  </head>
+
+  <body>
+    {% block page_content %}
+
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="title">
+            <h4>Lost NID Report</h4>
+          </div>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'adm_dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Lost NID Report
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="min-height-200px">
+      <div class="card-box mb-30">
+        <div class="pd-20">
+          <h4 class="h4">Lost NID Report</h4>
+        </div>
+        <div class="card-body pb-20">
+          <table class="table data-table-export hover nowrap">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th class="table-plus datatable-nosort">Citizen Name</th>
+                <th>NID Number</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Date Lost</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for data in lost_nid_reports %}
+              <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td class="table-plus">
+                  <a
+                    class="text-info"
+                    href="{% url 'adm_NID_reportDetail' data.id %}"
+                  >
+                    {{data.citizen.first_name}} {{data.citizen.last_name}}
+                  </a>
+                </td>
+                <td>{{data.card_number}}</td>
+                <td>
+                  Email: {{data.email}} <br />
+                  Phone: {{data.contact_info}} <br />
+                </td>
+                <td>{{data.status}}</td>
+                <td>{{data.description|linebreaksbr}}</td>
+                <td>{{data.date_lost|date:'d/m/Y'}}</td>
+                <td>{{data.created_date|date:'d/m/Y'}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>

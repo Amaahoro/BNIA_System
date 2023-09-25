@@ -1028,6 +1028,131 @@ def adm_citizenDetails(request, pk):
         return redirect(staffLogin)
 
 
+
+@login_required(login_url='staff_login')
+def adm_nidApplications_list(request):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        # getting nid application
+        applicationsData = IDCardRegistration.objects.filter().order_by('status','registration_date')
+        context = {
+            'title': 'NID Applications List',
+            'nidApplication_active': 'active',
+            'nid_applications': applicationsData,
+        }
+        return render(request, 'management/administrator/nid_applicationList.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def adm_nidApplicationDetail(request, pk):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        application_id = pk
+        # getting nid application
+        if IDCardRegistration.objects.filter(id=application_id).exists():
+            # if exists
+            foundData = IDCardRegistration.objects.get(id=application_id)
+
+            context = {
+                'title': 'NID application details',
+                'nidApplication_active': 'active',
+                'data': foundData,
+            }
+            return render(request, 'management/administrator/nid_applicationDetails.html', context)
+        else:
+            messages.error(request, ('NID Application not found'))
+            return redirect(adm_nidApplications_list)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def adm_lostNID_report(request):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        # getting nid lost reports
+        reportsData = LostIDCardReport.objects.filter().order_by('created_date')
+        context = {
+            'title': 'Lost NID Report',
+            'lost_nid_active': 'active',
+            'lost_nid_reports': reportsData,
+        }
+        return render(request, 'management/administrator/lost_nidReportList.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def adm_NID_reportDetail(request, pk):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        report_id = pk
+        # getting report
+        if LostIDCardReport.objects.filter(id=report_id).exists():
+            # if exists
+            foundData = LostIDCardReport.objects.get(id=report_id)
+            
+            context = {
+                'title': 'Lost NID Report details',
+                'lost_nid_active': 'active',
+                'report': foundData,
+            }
+            return render(request, 'management/administrator/lost_nidReportDetails.html', context)
+        else:
+            messages.error(request, ('Data not found'))
+            return redirect(adm_lostNID_report)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+
+@login_required(login_url='staff_login')
+def adm_registeredNID_list(request):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        # getting nid application
+        registered_nid = RegisteredIDCard.objects.filter().order_by('created_date')
+        context = {
+            'title': 'Registered NID List',
+            'registered_nid_active': 'active',
+            'registered_nid': registered_nid,
+        }
+        return render(request, 'management/administrator/registered_nidList.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+@login_required(login_url='staff_login')
+def adm_registeredNIDCardDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+        # getting registered nid data
+        if RegisteredIDCard.objects.filter(id=pk).exists():
+            # if exists
+            foundData = RegisteredIDCard.objects.get(id=pk)
+            
+            context = {
+                'title': 'Registered NID Card Details',
+                'registered_nid_active': 'active',
+                'data': foundData,
+            }
+            return render(request, 'management/administrator/registered_nidCardDetails.html', context)
+        else:
+            messages.error(request, ('Data not found'))
+            return redirect(adm_registeredNID_list)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+
+
 # ==========================================================
 # chief commune
 # ==========================================================

@@ -73,10 +73,10 @@
                   </a>
                 </td>
                 <td>{{citizen.gender}}</td>
-                <td>{{citizen.birthdate}}</td>
+                <td>{{citizen.birthdate|date:'d/m/Y'}}</td>
                 <td>{{citizen.birth_place}}</td>
                 <td>#{{citizen.volume_number}}</td>
-                <td>{{citizen.createdDate}}</td>
+                <td>{{citizen.createdDate|date:'d/m/Y'}}</td>
               </tr>
               {% endfor %}
             </tbody>

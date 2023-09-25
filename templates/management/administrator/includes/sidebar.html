@@ -28,7 +28,10 @@
           <div class="sidebar-small-cap"></div>
         </li>
         <li>
-          <a href="{% url 'adm_dashboard' %}" class="dropdown-toggle no-arrow">
+          <a
+            href="{% url 'adm_dashboard' %}"
+            class="dropdown-toggle no-arrow {{dash_active}}"
+          >
             <span class="micon dw dw-house-1"></span
             ><span class="mtext">Dashboard</span>
           </a>
@@ -38,7 +41,10 @@
           <div class="sidebar-small-cap">Services</div>
         </li>
         <li class="dropdown">
-          <a href="{% url 'adm_services' %}" class="dropdown-toggle no-arrow">
+          <a
+            href="{% url 'adm_services' %}"
+            class="dropdown-toggle no-arrow {{service_active}}"
+          >
             <span class="micon dw dw-list"></span
             ><span class="mtext">Services</span>
           </a>
@@ -54,13 +60,19 @@
           </a>
           <ul class="submenu">
             <li>
-              <a href="{% url 'adm_provinces' %}">Province</a>
+              <a href="{% url 'adm_provinces' %}" class="{{province_active}}"
+                >Province</a
+              >
             </li>
             <li>
-              <a href="{% url 'adm_communes' %}">Commune</a>
+              <a href="{% url 'adm_communes' %}" class="{{commune_active}}"
+                >Commune</a
+              >
             </li>
             <li>
-              <a href="{% url 'adm_collines' %}">Colline</a>
+              <a href="{% url 'adm_collines' %}" class="{{colline_active}}"
+                >Colline</a
+              >
             </li>
           </ul>
         </li>
@@ -71,7 +83,7 @@
         <li class="dropdown">
           <a
             href="{% url 'adm_communeChiefs' %}"
-            class="dropdown-toggle no-arrow"
+            class="dropdown-toggle no-arrow {{chief_active}}"
           >
             <span class="micon dw dw-list"></span
             ><span class="mtext">Chiefs</span>
@@ -82,7 +94,10 @@
           <div class="sidebar-small-cap">Citizenship</div>
         </li>
         <li class="dropdown">
-          <a href="{% url 'adm_citizens'%}" class="dropdown-toggle no-arrow">
+          <a
+            href="{% url 'adm_citizens'%}"
+            class="dropdown-toggle no-arrow {{citizens_active}}"
+          >
             <span class="micon dw dw-list"></span
             ><span class="mtext">Citizens</span>
           </a>
@@ -91,38 +106,31 @@
           <div class="dropdown-divider"></div>
           <div class="sidebar-small-cap">National Identity Card</div>
         </li>
-        <li class="dropdown">
-          <a href="javascript:;" class="dropdown-toggle">
+        <li>
+          <a
+            href="{% url 'adm_nidApplications_list' %}"
+            class="dropdown-toggle no-arrow {{nidApplication_active}}"
+          >
             <span class="micon dw dw-list"></span
             ><span class="mtext">NID Card Application</span>
           </a>
-          <ul class="submenu">
-            <li>
-              <a href="">New Application</a>
-            </li>
-            <li>
-              <a href="">Approved Application</a>
-            </li>
-            <li>
-              <a href="">Rejected Application</a>
-            </li>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a href="javascript:;" class="dropdown-toggle">
-            <span class="micon dw dw-list"></span
-            ><span class="mtext">Lost NID Card report</span>
-          </a>
-          <ul class="submenu">
-            <li><a href="">New Report</a></li>
-            <li><a href="">Approved Report</a></li>
-            <li><a href="">Rejected Report</a></li>
-          </ul>
         </li>
         <li>
-          <a href="" class="dropdown-toggle no-arrow">
+          <a
+            href="{% url 'adm_lostNID_report' %}"
+            class="dropdown-toggle no-arrow {{lost_nid_active}}"
+          >
+            <span class="micon dw dw-list"></span>
+            <span class="mtext">Lost NID Card report</span>
+          </a>
+        </li>
+        <li>
+          <a
+            href="{% url 'adm_registeredNID_list' %}"
+            class="dropdown-toggle no-arrow {{registered_nid_active}}"
+          >
             <span class="micon dw dw-list"></span
-            ><span class="mtext">Registered NID Card</span>
+            ><span class="mtext"> Registered NID Card </span>
           </a>
         </li>
         <li>
@@ -132,7 +140,7 @@
         <li>
           <a
             href="{% url 'adm_publications' %}"
-            class="dropdown-toggle no-arrow"
+            class="dropdown-toggle no-arrow {{publication_active}}"
           >
             <span class="micon dw dw-list"></span
             ><span class="mtext">Publication</span>
