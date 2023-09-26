@@ -57,6 +57,15 @@ class Citizen(models.Model):
         return "{} {}".format(self.first_name, self.last_name)
 
 
+class NIDCard(models.Model):
+    citizen = models.OneToOneField(Citizen, verbose_name="NID Card", related_name="nid_card", on_delete=models.CASCADE)
+    qr_code_image = models.ImageField(upload_to='citizen/nid_card_qr_codes/')
+    date = models.DateField(verbose_name="Generated Date", auto_now_add=True)
+
+    def __str__(self):
+        return f'NID Card - {self.citizen.nid_number}'
+
+
 class CitizenParent(models.Model):
     class Parent(models.TextChoices):
         SELECT = "", "Select Parent"
@@ -117,7 +126,7 @@ class RegisteredIDCard(models.Model):
     is_taken = models.BooleanField(verbose_name="Is taken?", default=False)
     placeofissue = models.ForeignKey(Commune, verbose_name="Place of Issue", related_name="registerd_idcard", on_delete=models.SET_NULL, blank=True, null=True)
     created_date = models.DateField(verbose_name="Date created", auto_now_add=True)
-    taken_date = models.DateField(verbose_name="Date taken")
+    taken_date = models.DateField(verbose_name="Date taken", blank=True, null=True)
 
     def __str__(self):
         return f"Registered ID Card - Card Number: {self.card_number}, User: {self.citizen.first_name} {self.citizen.last_name}"

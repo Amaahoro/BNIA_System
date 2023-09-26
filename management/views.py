@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model, authenticate, login, logout, update_session_auth_hash
 
 from .models import *
+from .id_generating import generate_unique_nid_number, generate_qr_code
 
 
 # Create your views here.
@@ -1054,13 +1055,72 @@ def adm_nidApplicationDetail(request, pk):
         if IDCardRegistration.objects.filter(id=application_id).exists():
             # if exists
             foundData = IDCardRegistration.objects.get(id=application_id)
+            
+            if request.POST:
+                if 'approve_application' in request.POST:
+                    application = foundData
+                    # Generate a unique NID number for the citizen
+                    nid_number = generate_unique_nid_number(application.citizen)
+                    # Assign the generated NID number to the citizen
+                    application.citizen.nid_number = nid_number
+                    application.citizen.picture = foundData.picture
+                    application.citizen.save()
+                    
+                    # Approve the application
+                    application.status = IDCardRegistration.Status.APPROVED
+                    application.save()
 
-            context = {
-                'title': 'NID application details',
-                'nidApplication_active': 'active',
-                'data': foundData,
-            }
-            return render(request, 'management/administrator/nid_applicationDetails.html', context)
+                    # Generate the QR code
+                    qr_code_path = generate_qr_code(application.citizen, application.resident_address)
+                    
+                    # Check if the citizen already has an NID card
+                    existing_nid_card = NIDCard.objects.filter(citizen=application.citizen).first()
+
+                    if existing_nid_card:
+                        # Update the existing NID card record
+                        existing_nid_card.qr_code_image = qr_code_path
+                        existing_nid_card.save()
+                    else:
+                        # Create a new NID card record in the database
+                        nid_card = NIDCard(
+                            citizen=application.citizen,
+                            qr_code_image=qr_code_path,
+                        )
+                        nid_card.save()
+
+                    # Create a RegisteredIDCard record
+                    RegisteredIDCard.objects.create(
+                        citizen=application.citizen,
+                        card_number=nid_number,
+                        takenCount=RegisteredIDCard.TakenCount.FIRST,
+                        is_taken=False,
+                        placeofissue=application.resident_address,
+                    )
+
+                    messages.success(request, 'NID application approved successfully.')
+
+                elif 'reject_application' in request.POST:
+                    # Reject the application and record the reason
+                    application = foundData
+                    application.status = IDCardRegistration.Status.REJECTED
+                    application.save()
+
+                    RejectedIDCardApplication.objects.create(
+                        application=application,
+                        rejected_reason=RejectedIDCardApplication.RejectReason.BAD_PICTURE,
+                    )
+
+                    messages.warning(request, 'NID application rejected.')
+
+                return redirect(adm_nidApplicationDetail, pk)
+            
+            else:
+                context = {
+                    'title': 'NID application details',
+                    'nidApplication_active': 'active',
+                    'data': foundData,
+                }
+                return render(request, 'management/administrator/nid_applicationDetails.html', context)
         else:
             messages.error(request, ('NID Application not found'))
             return redirect(adm_nidApplications_list)

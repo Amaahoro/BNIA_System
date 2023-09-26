@@ -116,13 +116,13 @@ class CitizenParentAdmin(admin.ModelAdmin):
 
 @admin.register(IDCardRegistration)
 class IDCardRegistrationAdmin(admin.ModelAdmin):
-    list_display = ('citizen','resident_address','picture', 'registration_date',)
-    list_filter = ('registration_date',)
+    list_display = ('citizen','resident_address','picture', 'status', 'registration_date',)
+    list_filter = ('status',)
     fieldsets = (
-        ('ID Card Registration Info', {'fields': ('recorded_by','citizen','resident_address','picture','registration_date',)}),
+        ('ID Card Registration Info', {'fields': ('recorded_by','citizen','resident_address','picture', 'status','registration_date',)}),
     )
     add_fieldsets = (
-        ('New ID Card Registration', {'fields': ('recorded_by','citizen','resident_address','picture','registration_date',)}),
+        ('New ID Card Registration', {'fields': ('recorded_by','citizen','resident_address','picture', 'status','registration_date',)}),
     )
     ordering = ('registration_date',)
     list_per_page = 20
@@ -217,3 +217,6 @@ class PublicationAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         return ['publication_date',]
+    
+    
+admin.site.register(NIDCard)

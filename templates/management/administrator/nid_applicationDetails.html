@@ -42,6 +42,47 @@
       <div class="card-box mb-30">
         <div class="pd-20">
           <h4 class="h4">NID Application Details</h4>
+          {% if data.status == "Waiting" %}
+          <span class="float-right">
+            To reply to the citizen application, click :
+            <div class="dropdown d-inline-block">
+              <a
+                class="nav-link dropdown-toggle text-dark btn btn btn-light btn-rounded"
+                href="#"
+                id="moreDropdown"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="fa fa-more"></i> More Action
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-right"
+                aria-labelledby="moreDropdown"
+              >
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-toggle="modal"
+                  data-target="#approve_application"
+                >
+                  <i class="fa fa-check text-success"></i> Approve Application
+                </a>
+                <hr class="m-0" />
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-toggle="modal"
+                  data-target="#reject_application"
+                >
+                  <i class="fa fa-exclamation-triangle text-warning"></i>
+                  Reject Application
+                </a>
+              </div>
+            </div>
+          </span>
+          {% endif %}
         </div>
         <div class="card-body pb-20">
           <div class="row px-4">
@@ -53,6 +94,13 @@
                 width="140px"
                 alt="{{data.citizen.first_name}} image"
               />
+              <a
+                href="{{data.picture.url}}"
+                download
+                class="btn btn-light btn-rounded"
+              >
+                <i class="fa fa-download text-secondary"></i> Download Image
+              </a>
               {% else %}
               <img
                 class="profile-user-img img-responsive img-circle"
@@ -66,7 +114,12 @@
               <span class="">
                 Full names:
                 <h4 class="title">
-                  {{ data.citizen.first_name }} {{ data.citizen.last_name }}
+                  <a
+                    class="text-info"
+                    href="{% url 'adm_citizenDetails' data.citizen.id %}"
+                  >
+                    {{data.citizen.first_name}} {{data.citizen.last_name}}
+                  </a>
                 </h4>
               </span>
             </div>
@@ -120,9 +173,197 @@
               </div>
             </div>
           </div>
+
+          {% if data.citizen.nid_number %}
+          <div class="row">
+            <div class="container mt-5">
+              <h1 class="text-center">National Identity Card of Burundi</h1>
+              <!-- Button to Show Card -->
+              <button class="btn btn-primary mt-3" onclick="showCard()">
+                Show Card
+              </button>
+
+              <!-- Front Side of the NID Card -->
+              <div id="frontSide" class="card mt-3" style="display: none">
+                <div class="card-header">Front Side</div>
+                <div class="card-body">
+                  <!-- Citizen Image -->
+                  <div class="text-center">
+                    {% if data.citizen.picture %}
+                    <img
+                      src="{{ data.citizen.picture.url }}"
+                      alt="Citizen Image"
+                      width="150"
+                    />
+                    {% else %}
+                    <img src="" alt="Citizen Image" width="150" />
+                    {% endif %}
+                  </div>
+                  <!-- Citizen Information -->
+                  <p>
+                    Name: {{data.citizen.first_name}} {{data.citizen.last_name}}
+                  </p>
+                  <p>NID Number: {{data.citizen.nid_number}}</p>
+                  <p>Birthdate: {{data.citizen.birthdate}}</p>
+                  <p>Gender: {{data.citizen.gender}}</p>
+                  <p>
+                    Birth Place:
+                    {{data.citizen.birth_place.commune.commune_name}}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Back Side of the NID Card (QR Code) -->
+              <div id="backSide" class="card mt-3" style="display: none">
+                <div class="card-header">Back Side (QR Code)</div>
+                <div class="card-body">
+                  <!-- QR Code -->
+                  <div class="text-center">
+                    <img
+                      src="{{data.citizen.nid_card.qr_code_image.url}}"
+                      alt="QR Code"
+                      width="150"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Button to Generate and Print Card -->
+              <button
+                class="btn btn-success mt-3"
+                onclick="generateAndPrintCard()"
+              >
+                Generate and Print Card
+              </button>
+            </div>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
+
+    {% if data.status == "Waiting" %}
+    <div
+      class="modal fade"
+      id="approve_application"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="approve_applicationModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="approve_applicationModalTitle">
+              <i class="fa fa-exclamation-triangle text-success"></i> CONFIRM
+              APPLICATION APPROVAL
+            </h6>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post" role="form">
+            {% csrf_token %}
+            <div class="modal-body py-5">
+              <p class="h6 text-center">
+                Are you sure you want to approve acceptance of this application?
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="approve_application"
+                class="btn btn-sm btn-outline-success btn-rounded"
+              >
+                Yes, Approve
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="reject_application"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="reject_applicationModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="reject_applicationModalTitle">
+              <i class="fa fa-exclamation-triangle text-warning"></i> CONFIRM
+              APPLICATION REJECTION
+            </h6>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post" role="form">
+            {% csrf_token %}
+            <div class="modal-body py-5">
+              <p class="h6 text-center">
+                Are you sure you want to reject this application?
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="reject_application"
+                class="btn btn-sm btn-outline-danger btn-rounded"
+              >
+                Yes, Reject
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <script>
+      // JavaScript functions to toggle card sides and generate/print the card
+      function showCard() {
+        const frontSide = document.getElementById("frontSide");
+        const backSide = document.getElementById("backSide");
+        frontSide.style.display = "block";
+        backSide.style.display = "block";
+      }
+
+      function generateAndPrintCard() {
+        // You can implement the logic to generate and print the card here
+        // For printing, you can use a library like jsPDF or a dedicated printing solution
+      }
+    </script>
+
+    <!-- end content-->
 
     {% endblock %}
   </body>

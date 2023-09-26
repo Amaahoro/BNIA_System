@@ -9,6 +9,7 @@ django-phonenumber-field = {extras = ["phonenumbers"], version = "*"}
 pillow = "*"
 mysqlclient = "*"
 cryptography = "*"
+qrcode = {extras = ["pil"], version = "*"}
 
 [dev-packages]
 
