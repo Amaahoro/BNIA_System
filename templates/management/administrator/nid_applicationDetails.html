@@ -94,13 +94,6 @@
                 width="140px"
                 alt="{{data.citizen.first_name}} image"
               />
-              <a
-                href="{{data.picture.url}}"
-                download
-                class="btn btn-light btn-rounded"
-              >
-                <i class="fa fa-download text-secondary"></i> Download Image
-              </a>
               {% else %}
               <img
                 class="profile-user-img img-responsive img-circle"
@@ -173,73 +166,114 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          {% if data.citizen.nid_number %}
+      {% if data.citizen.nid_number %}
+      <div class="card-box mb-30">
+        <div class="card-body">
+          <button
+            class="btn btn-outline-info btn-sm float-right"
+            onclick="showCard()"
+          >
+            <i class="fa fa-folder-open"></i>
+            Show Card
+          </button>
+          <h5 class="text-left">National Identity Card of Burundi</h5>
           <div class="row">
-            <div class="container mt-5">
-              <h1 class="text-center">National Identity Card of Burundi</h1>
-              <!-- Button to Show Card -->
-              <button class="btn btn-primary mt-3" onclick="showCard()">
-                Show Card
-              </button>
-
+            <div class="col-8 container">
               <!-- Front Side of the NID Card -->
-              <div id="frontSide" class="card mt-3" style="display: none">
-                <div class="card-header">Front Side</div>
-                <div class="card-body">
-                  <!-- Citizen Image -->
-                  <div class="text-center">
-                    {% if data.citizen.picture %}
-                    <img
-                      src="{{ data.citizen.picture.url }}"
-                      alt="Citizen Image"
-                      width="150"
-                    />
-                    {% else %}
-                    <img src="" alt="Citizen Image" width="150" />
-                    {% endif %}
+              <div id="frontSide" style="display: none">
+                <div class="card mt-3">
+                  <div class="card-header text-center font-weight-bold">
+                    National Identity Card of Burundi
                   </div>
-                  <!-- Citizen Information -->
-                  <p>
-                    Name: {{data.citizen.first_name}} {{data.citizen.last_name}}
-                  </p>
-                  <p>NID Number: {{data.citizen.nid_number}}</p>
-                  <p>Birthdate: {{data.citizen.birthdate}}</p>
-                  <p>Gender: {{data.citizen.gender}}</p>
-                  <p>
-                    Birth Place:
-                    {{data.citizen.birth_place.commune.commune_name}}
-                  </p>
+                  <div class="card-body py-3">
+                    <div class="row">
+                      <!-- Citizen Image -->
+                      <div class="col-5 d-flex">
+                        {% if data.citizen.picture %}
+                        <img
+                          src="{{ data.citizen.picture.url }}"
+                          alt="Citizen Image"
+                          width="100%"
+                        />
+                        {% else %}
+                        <img src="" alt="Citizen Image" width="150" />
+                        {% endif %}
+                      </div>
+                      <div class="col-7 pt-4 pb-2">
+                        <!-- Citizen Information -->
+                        <p class="text-dark m-0">
+                          Name:
+                          <span class="font-weight-bold">
+                            {{data.citizen.first_name}}
+                            {{data.citizen.last_name}}
+                          </span>
+                        </p>
+                        <p class="text-dark m-0">
+                          NID Number:
+                          <span class="font-weight-bold">
+                            {{data.citizen.nid_number}}
+                          </span>
+                        </p>
+                        <p class="text-dark m-0">
+                          Birthdate:
+                          <span class="font-weight-bold">
+                            {{data.citizen.birthdate|date:'d/m/Y'}}
+                          </span>
+                        </p>
+                        <p class="text-dark m-0">
+                          Gender:
+                          <span class="font-weight-bold">
+                            {{data.citizen.gender}}
+                          </span>
+                        </p>
+                        <p class="text-dark m-0">
+                          Place of Issue:
+                          <span class="font-weight-bold">
+                            {{data.resident_address}}, Burundi
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-
               <!-- Back Side of the NID Card (QR Code) -->
-              <div id="backSide" class="card mt-3" style="display: none">
-                <div class="card-header">Back Side (QR Code)</div>
-                <div class="card-body">
-                  <!-- QR Code -->
-                  <div class="text-center">
-                    <img
-                      src="{{data.citizen.nid_card.qr_code_image.url}}"
-                      alt="QR Code"
-                      width="150"
-                    />
+              <div id="backSide" style="display: none">
+                <div class="card mt-3">
+                  <div class="card-header text-center font-weight-bold">
+                    National Identity Card of Burundi
+                  </div>
+                  <div class="card-body">
+                    <!-- QR Code -->
+                    <div class="text-center">
+                      <img
+                        src="{{data.citizen.nid_card.qr_code_image.url}}"
+                        alt="QR Code"
+                        width="150"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
 
               <!-- Button to Generate and Print Card -->
-              <button
-                class="btn btn-success mt-3"
-                onclick="generateAndPrintCard()"
-              >
-                Generate and Print Card
-              </button>
+              <div id="printBtn" style="display: none">
+                <button
+                  class="btn btn-outline-success btn mt-5"
+                  onclick="generateAndPrintCard()"
+                >
+                  <i class="fa fa-save"></i>
+                  Generate Card
+                </button>
+              </div>
             </div>
           </div>
-          {% endif %}
         </div>
       </div>
+      {% endif %}
     </div>
 
     {% if data.status == "Waiting" %}
@@ -348,18 +382,49 @@
     </div>
     {% endif %}
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
     <script>
       // JavaScript functions to toggle card sides and generate/print the card
       function showCard() {
         const frontSide = document.getElementById("frontSide");
         const backSide = document.getElementById("backSide");
+        const printBtn = document.getElementById("printBtn");
         frontSide.style.display = "block";
         backSide.style.display = "block";
+        printBtn.style.display = "block";
       }
 
       function generateAndPrintCard() {
-        // You can implement the logic to generate and print the card here
-        // For printing, you can use a library like jsPDF or a dedicated printing solution
+        // Get the front side of the card element
+        const frontSide = document.getElementById("frontSide");
+        // Get the back side of the card element
+        const backSide = document.getElementById("backSide");
+
+        // Create a new image element from the front side content
+        html2canvas(frontSide).then(function (canvas) {
+          // Create a new image element from the captured canvas
+          const front_img = new Image();
+          front_img.src = canvas.toDataURL("image/png");
+
+          // Trigger a download of the front image
+          const frontLink = document.createElement("a");
+          frontLink.href = front_img.src;
+          frontLink.download = "{{data.citizen.nid_number}}_front_card.png";
+          frontLink.click();
+        });
+
+        // Create a new image element from the back side content
+        html2canvas(backSide).then(function (canvas) {
+          // Create a new image element from the captured canvas
+          const back_img = new Image();
+          back_img.src = canvas.toDataURL("image/png");
+
+          // Trigger a download of the back image
+          const backLink = document.createElement("a");
+          backLink.href = back_img.src;
+          backLink.download = "{{data.citizen.nid_number}}_back_card.png";
+          backLink.click();
+        });
       }
     </script>
 
