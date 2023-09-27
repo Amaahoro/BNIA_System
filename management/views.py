@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model, authenticate, login, logout, update_session_auth_hash
@@ -120,11 +121,17 @@ def adm_dashboard(request):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         # getting data
         citizens = Citizen.objects.filter()
+        services = Service.objects.filter()
+        applications = IDCardRegistration.objects.filter(status="Waiting")
+        reports = LostIDCardReport.objects.filter(status="Waiting")
 
         context = {
             'title': 'National Administrator - Dashboard',
             'dash_active': 'active',
             'citizens': citizens,
+            'services': services,
+            'new_applications': applications,
+            'new_reports': reports,
         }
         return render(request, 'management/administrator/dashboard.html', context)
     else:
@@ -1034,7 +1041,7 @@ def adm_citizenDetails(request, pk):
 def adm_nidApplications_list(request):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         # getting nid application
-        applicationsData = IDCardRegistration.objects.filter().order_by('status','registration_date')
+        applicationsData = IDCardRegistration.objects.filter().order_by('-status','registration_date')
         context = {
             'title': 'NID Applications List',
             'nidApplication_active': 'active',
@@ -1109,16 +1116,44 @@ def adm_nidApplicationDetail(request, pk):
                         application=application,
                         rejected_reason=RejectedIDCardApplication.RejectReason.BAD_PICTURE,
                     )
+                    
+                    
+                    # Send an email notification to the citizen
+                    subject = 'NID Card application Rejected'
+                    message = f'Your NID Card application has been rejected. Please visit the headquarters for more information.'
+                    from_email = settings.EMAIL_HOST_USER
+                    recipient_list = [application.email]
+                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
 
                     messages.warning(request, 'NID application rejected.')
+            
+                elif 'requirements' in request.POST:
+                    resident_address = request.POST.get('resident_address')
+                    picture = request.FILES['picture']
+
+                    if not (resident_address and picture):
+                        messages.warning(request, "Error , All fields are required.")
+                        return redirect(adm_nidApplicationDetail, pk)
+                    else:
+                        # update application requirements
+                        application = foundData
+                        application.resident_address = Commune.objects.get(id=resident_address)
+                        application.picture = picture
+                        application.save()
+
+                    messages.success(request, "Request success.")
 
                 return redirect(adm_nidApplicationDetail, pk)
             
             else:
+                # getting commune
+                communeData = Commune.objects.filter().order_by('commune_name')
                 context = {
                     'title': 'NID application details',
                     'nidApplication_active': 'active',
                     'data': foundData,
+                    'communes': communeData,
                 }
                 return render(request, 'management/administrator/nid_applicationDetails.html', context)
         else:
@@ -1149,24 +1184,63 @@ def adm_lostNID_report(request):
 
 @login_required(login_url='staff_login')
 def adm_NID_reportDetail(request, pk):
-    if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
+    if request.user.is_authenticated and request.user.is_nationalAdministrator:
         report_id = pk
-        # getting report
-        if LostIDCardReport.objects.filter(id=report_id).exists():
-            # if exists
-            foundData = LostIDCardReport.objects.get(id=report_id)
-            
+        try:
+            report = LostIDCardReport.objects.get(id=report_id)
+
+            if request.method == 'POST':
+                if 'Report_approved' in request.POST:
+                    # Update the status of the report
+                    report.status = LostIDCardReport.Status.APPROVED
+                    report.save()
+                    
+                    # Create a new IDCardRegistration
+                    id_registration = IDCardRegistration.objects.create(
+                        citizen=report.citizen,
+                        email=report.email,
+                        recorded_by=request.user,
+                    )
+
+                    # Send an email notification to the citizen
+                    subject = 'Lost ID Card Report Approved'
+                    message = f'Your lost ID card report has been approved. Please visit the headquarters to complete the requirements for your new ID card.'
+                    from_email = settings.EMAIL_HOST_USER
+                    recipient_list = [report.email]
+                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+                    # Redirect to a success page or to the report detail page
+                    messages.success(request, 'Lost ID Card Report has been approved.')
+                    return redirect(adm_NID_reportDetail, pk)
+
+                elif 'Report_rejected' in request.POST:
+                    # Update the status of the report
+                    report.status = LostIDCardReport.Status.REJECTED
+                    report.save()
+                    
+                    # Send an email notification to the citizen
+                    subject = 'Lost ID Card Report Rejected'
+                    message = f'Your lost ID card report has been rejected. Please provide clear and accurate details regarding how you lost your ID card to proceed with a new application.'
+                    from_email = settings.EMAIL_HOST_USER
+                    recipient_list = [report.email]
+                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+                    # Redirect to a success page or to the report detail page
+                    messages.warning(request, 'Lost ID Card Report has been rejected.')
+                    return redirect(adm_NID_reportDetail, pk)
+
             context = {
                 'title': 'Lost NID Report details',
                 'lost_nid_active': 'active',
-                'report': foundData,
+                'report': report,
             }
             return render(request, 'management/administrator/lost_nidReportDetails.html', context)
-        else:
-            messages.error(request, ('Data not found'))
+        
+        except LostIDCardReport.DoesNotExist:
+            messages.error(request, 'Data not found')
             return redirect(adm_lostNID_report)
     else:
-        messages.warning(request, ('You have to login to view the page!'))
+        messages.warning(request, 'You have to login to view the page!')
         return redirect(staffLogin)
 
 

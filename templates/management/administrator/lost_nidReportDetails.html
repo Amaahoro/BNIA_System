@@ -42,11 +42,62 @@
       <div class="card-box mb-30">
         <div class="pd-20">
           <h4 class="h4">Lost NID Report Detail</h4>
+          {% if report.status == "Waiting" %}
+          <span class="float-right">
+            To reply to the citizen application, click :
+            <div class="dropdown d-inline-block">
+              <a
+                class="nav-link dropdown-toggle text-dark btn btn btn-light btn-rounded"
+                href="#"
+                id="moreDropdown"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="fa fa-more"></i> More Action
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-right"
+                aria-labelledby="moreDropdown"
+              >
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-toggle="modal"
+                  data-target="#approve_application"
+                >
+                  <i class="fa fa-check text-success"></i> Approve Application
+                </a>
+                <hr class="m-0" />
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-toggle="modal"
+                  data-target="#reject_application"
+                >
+                  <i class="fa fa-exclamation-triangle text-warning"></i>
+                  Reject Application
+                </a>
+              </div>
+            </div>
+          </span>
+          {% endif %}
         </div>
         <div class="card-body pb-20">
           <div class="row px-4">
             <h6 class="">Citizen Information</h6>
             <hr />
+            {% if report.citizen.picture %}
+            <div class="col-lg-12 mb-4">
+              <img
+                class="profile-user-img img-responsive img-circle"
+                src="{{report.citizen.picture.url}}"
+                width="140px"
+                alt="{{report.citizen.first_name}} image"
+              />
+            </div>
+            {% endif %}
             <div class="col-lg-12 mb-4">
               <span class="">
                 Full names:
@@ -98,9 +149,8 @@
             <div class="col-lg-12 mb-1">
               <p>Description:</p>
               <div class="form-group">
-                <label for="phone">Description</label>
                 <textarea
-                  class="form-control bg-white"
+                  class="form-control bg-white border-0"
                   rows="10"
                   placeholder="Description ..."
                   name="description"
@@ -111,6 +161,115 @@
         </div>
       </div>
     </div>
+    
+
+    {% if report.status == "Waiting" %}
+    <div
+      class="modal fade"
+      id="approve_application"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="approve_applicationModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="approve_applicationModalTitle">
+              <i class="fa fa-exclamation-triangle text-success"></i> CONFIRM
+              APPLICATION APPROVAL
+            </h6>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post" role="form">
+            {% csrf_token %}
+            <div class="modal-body py-5">
+              <p class="h6 text-center">
+                Are you sure you want to approve acceptance of this Lost NID Card Report?
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="Report_approved"
+                class="btn btn-sm btn-outline-success btn-rounded"
+              >
+                Yes, Approve
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="reject_application"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="reject_applicationModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="reject_applicationModalTitle">
+              <i class="fa fa-exclamation-triangle text-warning"></i> CONFIRM
+              APPLICATION REJECTION
+            </h6>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post" role="form">
+            {% csrf_token %}
+            <div class="modal-body py-5">
+              <p class="h6 text-center">
+                Are you sure you want to reject this Lost NID Card Report?
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="Report_rejected"
+                class="btn btn-sm btn-outline-danger btn-rounded"
+              >
+                Yes, Reject
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+
     {% endblock %}
   </body>
 </html>

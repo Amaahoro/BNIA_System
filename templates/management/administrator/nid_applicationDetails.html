@@ -47,7 +47,7 @@
             To reply to the citizen application, click :
             <div class="dropdown d-inline-block">
               <a
-                class="nav-link dropdown-toggle text-dark btn btn btn-light btn-rounded"
+                class="nav-link dropdown-toggle text-dark btn btn-sm btn-light btn-rounded"
                 href="#"
                 id="moreDropdown"
                 role="button"
@@ -61,6 +61,17 @@
                 class="dropdown-menu dropdown-menu-right"
                 aria-labelledby="moreDropdown"
               >
+                {% if data.citizen.nid_number and not data.resident_address  %}
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-toggle="modal"
+                  data-target="#requirements"
+                >
+                  <i class="fa fa-file text-secondary"></i> Complete
+                  Requirements
+                </a>
+                {% else %}
                 <a
                   class="dropdown-item"
                   href="#"
@@ -79,6 +90,7 @@
                   <i class="fa fa-exclamation-triangle text-warning"></i>
                   Reject Application
                 </a>
+                {% endif %}
               </div>
             </div>
           </span>
@@ -142,6 +154,12 @@
                 NID Card No.:
                 <span class="h5">{{ data.citizen.nid_number }}</span>
               </p>
+              {% if data.citizen.nid_number and data.status == "Waiting" %}
+              <span class="text-primary font-weight-bold">
+                <i class="fa fa-exclamation-triangle text-warning"></i> Applied
+                for new NID Card
+              </span>
+              {% endif %}
             </div>
             <div class="col-lg-12 my-4">
               <h6 class="">More Information</h6>
@@ -169,7 +187,9 @@
         </div>
       </div>
 
-      {% if data.citizen.nid_number %}
+      {% if not data.status == "Waiting" %}
+      <!-- card content-->
+      {% if data.citizen.nid_number and data.resident_address %}
       <div class="card-box mb-30">
         <div class="card-body">
           <button
@@ -180,29 +200,30 @@
             Show Card
           </button>
           <h5 class="text-left">National Identity Card of Burundi</h5>
-          <div class="row">
-            <div class="col-8 container">
+          <hr />
+          <div class="row mt-2">
+            <div class="col-lg-6">
               <!-- Front Side of the NID Card -->
-              <div id="frontSide" style="display: none">
-                <div class="card mt-3">
+              <div id="frontSide" style="display: none;">
+                <div class="card">
                   <div class="card-header text-center font-weight-bold">
                     National Identity Card of Burundi
                   </div>
-                  <div class="card-body py-3">
+                  <div class="card-body">
                     <div class="row">
                       <!-- Citizen Image -->
-                      <div class="col-5 d-flex">
+                      <div class="col-4">
                         {% if data.citizen.picture %}
                         <img
                           src="{{ data.citizen.picture.url }}"
                           alt="Citizen Image"
-                          width="100%"
+                          style="width:150px; height:150px"
                         />
                         {% else %}
                         <img src="" alt="Citizen Image" width="150" />
                         {% endif %}
                       </div>
-                      <div class="col-7 pt-4 pb-2">
+                      <div class="col-8">
                         <!-- Citizen Information -->
                         <p class="text-dark m-0">
                           Name:
@@ -240,9 +261,11 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="col-lg-6">
               <!-- Back Side of the NID Card (QR Code) -->
-              <div id="backSide" style="display: none">
-                <div class="card mt-3">
+              <div id="backSide" style="display: none;">
+                <div class="card">
                   <div class="card-header text-center font-weight-bold">
                     National Identity Card of Burundi
                   </div>
@@ -252,27 +275,29 @@
                       <img
                         src="{{data.citizen.nid_card.qr_code_image.url}}"
                         alt="QR Code"
-                        width="150"
+                        width="150px"
                       />
                     </div>
                   </div>
                 </div>
               </div>
-
-              <!-- Button to Generate and Print Card -->
-              <div id="printBtn" style="display: none">
-                <button
-                  class="btn btn-outline-success btn mt-5"
-                  onclick="generateAndPrintCard()"
-                >
-                  <i class="fa fa-save"></i>
-                  Generate Card
-                </button>
-              </div>
             </div>
+          </div>
+          
+          <!-- Button to Generate and Print Card -->
+          <div id="printBtn" style="display: none">
+            <button
+              class="btn btn-outline-success btn mt-5"
+              onclick="generateAndPrintCard()"
+            >
+              <i class="fa fa-save"></i>
+              Generate Card
+            </button>
           </div>
         </div>
       </div>
+      {% endif %}
+      <!-- end content-->
       {% endif %}
     </div>
 
@@ -380,6 +405,91 @@
         </div>
       </div>
     </div>
+
+    
+    <div
+      class="modal fade"
+      id="requirements"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="requirementsModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="requirementsModalTitle">
+              <i class="fa fa-file text-primary"></i> COMPLETE THE REQUIREMENT FOR APPLICATION
+            </h6>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          
+          <form
+            action=""
+            method="post"
+            role="form"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div class="card-body">
+              <div class="form-group mb-3">
+                <label for="picture">Upload a picture</label>
+                <input
+                  id="picture"
+                  type="file"
+                  class="form-control"
+                  placeholder="upload picture"
+                  name="picture"
+                  required
+                />
+              </div>
+              <div class="form-group mb-3">
+                <label for="resident_address">
+                  Place of Issue
+                </label>
+                <select
+                  class="form-control"
+                  name="resident_address"
+                  id="resident_address"
+                  required
+                >
+                  <option value="">Select Place of Issue</option>
+                  {% for commune in communes %}
+                  <option value="{{commune.id}}">
+                    {{commune.commune_name}}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="requirements"
+                class="btn btn-sm btn-outline-success"
+              >
+               Submit
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     {% endif %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
