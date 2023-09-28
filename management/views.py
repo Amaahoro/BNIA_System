@@ -180,8 +180,12 @@ def adm_profile(request):
                 return redirect(adm_profile)
 
         else:
+            applications = IDCardRegistration.objects.filter(status="Waiting")
+            reports = LostIDCardReport.objects.filter(status="Waiting")
             context = {
                 'title': 'National Administrator - Profile',
+                'new_applications': applications,
+                'new_reports': reports,
             }
             return render(request, 'management/administrator/profile.html', context)
     else:
@@ -220,14 +224,16 @@ def adm_services(request):
                 messages.error(request, "Error , Service name is required!")
                 return redirect(adm_services)
         else:
-            # request_data = Application.objects.filter(status="Waiting")
+            applications = IDCardRegistration.objects.filter(status="Waiting")
+            reports = LostIDCardReport.objects.filter(status="Waiting")
             # getting services
             ServiceData = Service.objects.filter().order_by('service_name')
             context = {
                 'title': 'National Administrator - Service List',
                 'service_active': 'active',
                 'services': ServiceData,
-                # 'request_data': request_data,
+                'new_applications': applications,
+                'new_reports': reports,
             }
             return render(request, 'management/administrator/service_list.html', context)
     else:
@@ -280,12 +286,14 @@ def adm_serviceDetails(request, pk):
                 return redirect(adm_services)
 
             else:
-                # request_data = Application.objects.filter(status="Waiting")
+                applications = IDCardRegistration.objects.filter(status="Waiting")
+                reports = LostIDCardReport.objects.filter(status="Waiting")
                 context = {
                     'title': 'National Administrator - Service Info',
                     'service_active': 'active',
                     'service': foundData,
-                    # 'request_data': request_data,
+                    'new_applications': applications,
+                    'new_reports': reports,
                 }
                 return render(request, 'management/administrator/service_details.html', context)
         else:
@@ -325,14 +333,16 @@ def adm_provinces(request):
                 messages.error(request, "Error , Province name is required!")
                 return redirect(adm_provinces)
         else:
-            # request_data = Application.objects.filter(status="Waiting")
+            applications = IDCardRegistration.objects.filter(status="Waiting")
+            reports = LostIDCardReport.objects.filter(status="Waiting")
             # getting provinces
             ProvinceData = Province.objects.filter().order_by('province_name')
             context = {
                 'title': 'National Administrator - Province List',
                 'province_active': 'active',
                 'provinces': ProvinceData,
-                # 'request_data': request_data,
+                'new_applications': applications,
+                'new_reports': reports,
             }
             return render(request, 'management/administrator/province_list.html', context)
     else:
@@ -383,12 +393,14 @@ def adm_provinceDetails(request, pk):
                 return redirect(adm_provinces)
 
             else:
-                # request_data = Application.objects.filter(status="Waiting")
+                applications = IDCardRegistration.objects.filter(status="Waiting")
+                reports = LostIDCardReport.objects.filter(status="Waiting")
                 context = {
                     'title': 'National Administrator - Province Info',
                     'province_active': 'active',
                     'province': foundData,
-                    # 'request_data': request_data,
+                    'new_applications': applications,
+                    'new_reports': reports,
                 }
                 return render(request, 'management/administrator/province_details.html', context)
         else:
@@ -430,7 +442,8 @@ def adm_communes(request):
                 messages.error(request, "Error , All fields are required!")
                 return redirect(adm_communes)
         else:
-            # request_data = Application.objects.filter(status="Waiting")
+            applications = IDCardRegistration.objects.filter(status="Waiting")
+            reports = LostIDCardReport.objects.filter(status="Waiting")
             # getting province
             ProvinceData = Province.objects.filter().order_by('province_name')
             # getting communes
@@ -440,7 +453,8 @@ def adm_communes(request):
                 'commune_active': 'active',
                 'communes': CommuneData,
                 'provinces': ProvinceData,
-                # 'request_data': request_data,
+                'new_applications': applications,
+                'new_reports': reports,
             }
             return render(request, 'management/administrator/commune_list.html', context)
     else:
@@ -493,7 +507,8 @@ def adm_communeDetails(request, pk):
                 return redirect(adm_communes)
 
             else:
-                # request_data = Application.objects.filter(status="Waiting")
+                applications = IDCardRegistration.objects.filter(status="Waiting")
+                reports = LostIDCardReport.objects.filter(status="Waiting")
                 
                 # getting province
                 ProvinceData = Province.objects.filter().order_by('province_name')
@@ -502,7 +517,8 @@ def adm_communeDetails(request, pk):
                     'commune_active': 'active',
                     'commune': foundData,
                     'provinces': ProvinceData,
-                    # 'request_data': request_data,
+                    'new_applications': applications,
+                    'new_reports': reports,
                 }
                 return render(request, 'management/administrator/commune_details.html', context)
         else:
@@ -544,7 +560,8 @@ def adm_collines(request):
                 messages.error(request, "Error , All fields are required!")
                 return redirect(adm_collines)
         else:
-            # request_data = Application.objects.filter(status="Waiting")
+            applications = IDCardRegistration.objects.filter(status="Waiting")
+            reports = LostIDCardReport.objects.filter(status="Waiting")
             # getting commune
             CommuneData = Commune.objects.filter().order_by('commune_name')
             # getting collines
@@ -554,7 +571,8 @@ def adm_collines(request):
                 'colline_active': 'active',
                 'collines': CollineData,
                 'communes': CommuneData,
-                # 'request_data': request_data,
+                'new_applications': applications,
+                'new_reports': reports,
             }
             return render(request, 'management/administrator/colline_list.html', context)
     else:
@@ -607,7 +625,8 @@ def adm_collineDetails(request, pk):
                 return redirect(adm_collines)
 
             else:
-                # request_data = Application.objects.filter(status="Waiting")
+                applications = IDCardRegistration.objects.filter(status="Waiting")
+                reports = LostIDCardReport.objects.filter(status="Waiting")
                 
                 # getting commune
                 communeData = Commune.objects.filter().order_by('commune_name')
@@ -616,7 +635,8 @@ def adm_collineDetails(request, pk):
                     'colline_active': 'active',
                     'colline': foundData,
                     'communes': communeData,
-                    # 'request_data': request_data,
+                    'new_applications': applications,
+                    'new_reports': reports,
                 }
                 return render(request, 'management/administrator/colline_details.html', context)
         else:
@@ -670,7 +690,8 @@ def adm_communeChiefs(request):
                 messages.error(request, "Error , All fields are required!")
                 return redirect(adm_communeChiefs)
         else:
-            # request_data = Application.objects.filter(status="Waiting")
+            applications = IDCardRegistration.objects.filter(status="Waiting")
+            reports = LostIDCardReport.objects.filter(status="Waiting")
             # getting commune
             CommuneData = Commune.objects.filter().order_by('commune_name')
             # getting chiefs
@@ -680,7 +701,8 @@ def adm_communeChiefs(request):
                 'chief_active': 'active',
                 'chiefs': ChiefData,
                 'communes': CommuneData,
-                # 'request_data': request_data,
+                'new_applications': applications,
+                'new_reports': reports,
             }
             return render(request, 'management/administrator/chiefCommune_list.html', context)
     else:
@@ -741,7 +763,8 @@ def adm_communeChiefDetails(request, pk):
                 return redirect(adm_communeChiefs)
 
             else:
-                # request_data = Application.objects.filter(status="Waiting")
+                applications = IDCardRegistration.objects.filter(status="Waiting")
+                reports = LostIDCardReport.objects.filter(status="Waiting")
                 
                 # getting commune
                 communeData = Commune.objects.filter().order_by('commune_name')
@@ -750,7 +773,8 @@ def adm_communeChiefDetails(request, pk):
                     'chief_active': 'active',
                     'chief': foundData,
                     'communes': communeData,
-                    # 'request_data': request_data,
+                    'new_applications': applications,
+                    'new_reports': reports,
                 }
                 return render(request, 'management/administrator/chiefCommune_details.html', context)
         else:
@@ -791,14 +815,16 @@ def adm_publications(request):
                 messages.error(request, "Error , All fields are required!")
                 return redirect(adm_publications)
         else:
-            # request_data = Application.objects.filter(status="Waiting")
+            applications = IDCardRegistration.objects.filter(status="Waiting")
+            reports = LostIDCardReport.objects.filter(status="Waiting")
             # getting publications
             PublicationData = Publication.objects.filter().order_by('publication_date')
             context = {
                 'title': 'National Administrator - Publications List',
                 'publication_active': 'active',
                 'publications': PublicationData,
-                # 'request_data': request_data,
+                'new_applications': applications,
+                'new_reports': reports,
             }
             return render(request, 'management/administrator/publication_list.html', context)
     else:
@@ -851,13 +877,15 @@ def adm_publicationDetails(request, pk):
                 return redirect(adm_publications)
 
             else:
-                # request_data = Application.objects.filter(status="Waiting")
+                applications = IDCardRegistration.objects.filter(status="Waiting")
+                reports = LostIDCardReport.objects.filter(status="Waiting")
                 
                 context = {
                     'title': 'National Administrator - Publication Info',
                     'publication_active': 'active',
                     'publication': foundData,
-                    # 'request_data': request_data,
+                    'new_applications': applications,
+                    'new_reports': reports,
                 }
                 return render(request, 'management/administrator/publication_details.html', context)
         else:
@@ -926,6 +954,8 @@ def adm_citizens(request):
                 messages.error(request, "Error , All fields are required!")
                 return redirect(adm_citizens)
         else:
+            applications = IDCardRegistration.objects.filter(status="Waiting")
+            reports = LostIDCardReport.objects.filter(status="Waiting")
             # getting colline
             CollineData = Colline.objects.filter().order_by('colline_name')
             # getting citizen
@@ -935,6 +965,8 @@ def adm_citizens(request):
                 'citizens_active': 'active',
                 'citizens': citizensData,
                 'collines': CollineData,
+                'new_applications': applications,
+                'new_reports': reports,
             }
             return render(request, 'management/administrator/citizen_list.html', context)
     else:
@@ -1019,6 +1051,8 @@ def adm_citizenDetails(request, pk):
                 return redirect(adm_citizens)
 
             else:
+                applications = IDCardRegistration.objects.filter(status="Waiting")
+                reports = LostIDCardReport.objects.filter(status="Waiting")
                 # getting colline
                 CollineData = Colline.objects.filter().order_by('colline_name')
                 context = {
@@ -1026,6 +1060,8 @@ def adm_citizenDetails(request, pk):
                     'citizens_active': 'active',
                     'citizen': foundData,
                     'collines': CollineData,
+                    'new_applications': applications,
+                    'new_reports': reports,
                 }
                 return render(request, 'management/administrator/citizen_details.html', context)
         else:
@@ -1042,10 +1078,15 @@ def adm_nidApplications_list(request):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         # getting nid application
         applicationsData = IDCardRegistration.objects.filter().order_by('-status','registration_date')
+        
+        applications = IDCardRegistration.objects.filter(status="Waiting")
+        reports = LostIDCardReport.objects.filter(status="Waiting")
         context = {
             'title': 'NID Applications List',
             'nidApplication_active': 'active',
             'nid_applications': applicationsData,
+            'new_applications': applications,
+            'new_reports': reports,
         }
         return render(request, 'management/administrator/nid_applicationList.html', context)
     else:
@@ -1147,6 +1188,8 @@ def adm_nidApplicationDetail(request, pk):
                 return redirect(adm_nidApplicationDetail, pk)
             
             else:
+                applications = IDCardRegistration.objects.filter(status="Waiting")
+                reports = LostIDCardReport.objects.filter(status="Waiting")
                 # getting commune
                 communeData = Commune.objects.filter().order_by('commune_name')
                 context = {
@@ -1154,6 +1197,8 @@ def adm_nidApplicationDetail(request, pk):
                     'nidApplication_active': 'active',
                     'data': foundData,
                     'communes': communeData,
+                    'new_applications': applications,
+                    'new_reports': reports,
                 }
                 return render(request, 'management/administrator/nid_applicationDetails.html', context)
         else:
@@ -1170,10 +1215,15 @@ def adm_lostNID_report(request):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         # getting nid lost reports
         reportsData = LostIDCardReport.objects.filter().order_by('created_date')
+        
+        applications = IDCardRegistration.objects.filter(status="Waiting")
+        reports = LostIDCardReport.objects.filter(status="Waiting")
         context = {
             'title': 'Lost NID Report',
             'lost_nid_active': 'active',
             'lost_nid_reports': reportsData,
+            'new_applications': applications,
+            'new_reports': reports,
         }
         return render(request, 'management/administrator/lost_nidReportList.html', context)
     else:
@@ -1228,13 +1278,19 @@ def adm_NID_reportDetail(request, pk):
                     # Redirect to a success page or to the report detail page
                     messages.warning(request, 'Lost ID Card Report has been rejected.')
                     return redirect(adm_NID_reportDetail, pk)
+            
+            else:
+                applications = IDCardRegistration.objects.filter(status="Waiting")
+                reports = LostIDCardReport.objects.filter(status="Waiting")
 
-            context = {
-                'title': 'Lost NID Report details',
-                'lost_nid_active': 'active',
-                'report': report,
-            }
-            return render(request, 'management/administrator/lost_nidReportDetails.html', context)
+                context = {
+                    'title': 'Lost NID Report details',
+                    'lost_nid_active': 'active',
+                    'report': report,
+                    'new_applications': applications,
+                    'new_reports': reports,
+                }
+                return render(request, 'management/administrator/lost_nidReportDetails.html', context)
         
         except LostIDCardReport.DoesNotExist:
             messages.error(request, 'Data not found')
@@ -1251,10 +1307,15 @@ def adm_registeredNID_list(request):
     if request.user.is_authenticated and request.user.is_nationalAdministrator == True:
         # getting nid application
         registered_nid = RegisteredIDCard.objects.filter().order_by('created_date')
+        
+        applications = IDCardRegistration.objects.filter(status="Waiting")
+        reports = LostIDCardReport.objects.filter(status="Waiting")
         context = {
             'title': 'Registered NID List',
             'registered_nid_active': 'active',
             'registered_nid': registered_nid,
+            'new_applications': applications,
+            'new_reports': reports,
         }
         return render(request, 'management/administrator/registered_nidList.html', context)
     else:
@@ -1271,10 +1332,15 @@ def adm_registeredNIDCardDetails(request, pk):
             # if exists
             foundData = RegisteredIDCard.objects.get(id=pk)
             
+            applications = IDCardRegistration.objects.filter(status="Waiting")
+            reports = LostIDCardReport.objects.filter(status="Waiting")
+            
             context = {
                 'title': 'Registered NID Card Details',
                 'registered_nid_active': 'active',
                 'data': foundData,
+                'new_applications': applications,
+                'new_reports': reports,
             }
             return render(request, 'management/administrator/registered_nidCardDetails.html', context)
         else:

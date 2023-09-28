@@ -85,7 +85,15 @@
                 <td>{{data.citizen.birthdate|date:'d/m/Y'}}</td>
                 <td>{{data.resident_address}}</td>
                 <td>{{data.email}}</td>
-                <td>{{data.status}}</td>
+                <td>
+                  {% if data.status == "Waiting" %}
+                  <span class="text-warning">{{data.status}}</span>
+                  {% elif data.status == "Approved" %}
+                  <span class="text-success">{{data.status}}</span>
+                  {% else %}
+                  <span class="text-danger">{{data.status}}</span>
+                  {% endif %}
+                </td>
                 <td>{{data.citizen.createdDate|date:'d/m/Y'}}</td>
               </tr>
               {% endfor %}

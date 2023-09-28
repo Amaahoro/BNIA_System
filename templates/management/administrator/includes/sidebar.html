@@ -111,8 +111,13 @@
             href="{% url 'adm_nidApplications_list' %}"
             class="dropdown-toggle no-arrow {{nidApplication_active}}"
           >
-            <span class="micon dw dw-list"></span
-            ><span class="mtext">NID Card Application</span>
+            <span class="micon dw dw-list"></span>
+            <span class="mtext"
+              >NID Card Application
+              <span class="badge badge-warning float-right"
+                >{{new_applications.count}}</span
+              >
+            </span>
           </a>
         </li>
         <li>
@@ -121,7 +126,12 @@
             class="dropdown-toggle no-arrow {{lost_nid_active}}"
           >
             <span class="micon dw dw-list"></span>
-            <span class="mtext">Lost NID Card report</span>
+            <span class="mtext"
+              >Lost NID Card report
+              <span class="badge badge-warning float-right"
+                >{{new_reports.count}}</span
+              >
+            </span>
           </a>
         </li>
         <li>

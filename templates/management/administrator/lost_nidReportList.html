@@ -68,7 +68,15 @@
                   Email: {{data.email}} <br />
                   Phone: {{data.contact_info}} <br />
                 </td>
-                <td>{{data.status}}</td>
+                <td>
+                  {% if data.status == "Waiting" %}
+                  <span class="text-warning">{{data.status}}</span>
+                  {% elif data.status == "Approved" %}
+                  <span class="text-success">{{data.status}}</span>
+                  {% else %}
+                  <span class="text-danger">{{data.status}}</span>
+                  {% endif %}
+                </td>
                 <td>{{data.description|linebreaksbr}}</td>
                 <td>{{data.date_lost|date:'d/m/Y'}}</td>
                 <td>{{data.created_date|date:'d/m/Y'}}</td>
